@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "305081261313",
+    "firebase_url": "https://hearmewatch-f895f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hearmewatch-f895f",
+    "storage_bucket": "hearmewatch-f895f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305081261313:android:b579f5491ac1e46c718f00",
+        "android_client_info": {
+          "package_name": "dev.noash.hearmewatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "305081261313-sices04e1l2prbv6lr2urfulb2va4atb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.noash.hearmewatch",
+            "certificate_hash": "38eb5ead4b79c6d591185d3204ae96c8931b0f3a"
+          }
+        },
+        {
+          "client_id": "305081261313-qa7dv7j19ul1oqst3nthh04uu8fj11cu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEDBrFYJT4PIXH9SmdnVXhPCRXAJ3vuNE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "305081261313-qa7dv7j19ul1oqst3nthh04uu8fj11cu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
