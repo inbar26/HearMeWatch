@@ -44,5 +44,7 @@ dependencies {
     implementation(platform(libs.firebase.bom.v3312))
     implementation(libs.firebase.auth)
     implementation (libs.firebase.ui.auth)
+    implementation (libs.glide)
+    annotationProcessor (libs.compiler)
     
 }

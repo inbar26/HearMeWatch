@@ -1,10 +1,10 @@
 package dev.noash.hearmewatch.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,8 +28,9 @@ public class HomeActivity extends AppCompatActivity {
     private DrawerLayout home_drawerLayout;
     private NavigationView home_navigationView;
     private Toolbar home_toolbar;
-    private final int BLACK = Color.parseColor("#000000");
-    private final int WHITE = Color.parseColor("#FFFFFF");
+    MaterialButton BTN_start_recording;
+    MaterialButton BTN_stop_recording;
+    MaterialButton BTN_connect_watch;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,27 +38,13 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         findViews();
         initViews();
-        FirebaseDatabase.getInstance().getReference("test_node")
-                .setValue("Hello from Noa!")
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "✔ שמירה ל-Firebase הצליחה!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "❌ שמירה נכשלה: " + task.getException(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-        User user = new User();
-//        user.setName("noa");
-//        user.setEmail("");
-       // DataBaseManager.addUserToDB(user);
     }
 
-
-
     private void initViews() {
+        BTN_start_recording.setOnClickListener(v -> startRecording());
+        BTN_stop_recording.setOnClickListener(v -> stopRecording());
+        BTN_connect_watch.setOnClickListener(v -> connectWatch());
         setSupportActionBar(home_toolbar);
-       // home_TV_info_box.setText(Html.fromHtml(getString(R.string.home_TV_info), Html.FROM_HTML_MODE_LEGACY));
         menuManagement();
     }
     private void menuManagement() {
@@ -70,9 +57,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-//                if (id == R.id.nav_design) {
-//                    //moveToDesignPage();
-//                }
+                if (id == R.id.nav_preferences) {
+                    moveToPreferencesPage();
+                }
                 home_drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
@@ -83,12 +70,25 @@ public class HomeActivity extends AppCompatActivity {
         home_navigationView = findViewById(R.id.home_navigation_view);
         home_toolbar = findViewById(R.id.home_toolbar);
         mainLayout = findViewById(R.id.home_main_layout);
+        BTN_start_recording = findViewById(R.id.BTN_start_recording);
+        BTN_stop_recording = findViewById(R.id.BTN_stop_recording);
+        BTN_connect_watch = findViewById(R.id.BTN_connect_watch);
     }
-//    private void moveToDesignPage() {
-//        Intent i = new Intent(this, DesignActivity.class);
-//        Bundle bundle = new Bundle();
-//        i.putExtras(bundle);
-//        startActivity(i);
-//        finish();
-//    }
+    private void moveToPreferencesPage() {
+        Intent i = new Intent(this, PreferencesActivity.class);
+        Bundle bundle = new Bundle();
+        i.putExtras(bundle);
+        startActivity(i);
+        finish();
+    }
+
+    private void connectWatch() {
+
+    }
+
+    private void stopRecording() {
+    }
+
+    private void startRecording() {
+    }
 }

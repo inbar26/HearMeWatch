@@ -8,7 +8,7 @@ public class User {
         private String fName;
         private String lName;
         private String email;
-        private ArrayList<preference> myPreferences = new ArrayList<>();
+        private ArrayList<MyPreference> myMyPreferences = new ArrayList<>();
         public User() {}
 
         public String getId() {
@@ -20,6 +20,35 @@ public class User {
             return this;
         }
 
-
-
+    public String getfName() {
+        return fName;
     }
+
+    public void setfName(String fName) {
+        this.fName = fName;
+    }
+
+    public String getlName() {
+        return lName;
+    }
+
+    public void setlName(String lName) {
+        this.lName = lName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public ArrayList<MyPreference> getMyMyPreferences() {
+        return myMyPreferences;
+    }
+
+    public void setMyMyPreferences(ArrayList<MyPreference> myMyPreferences) {
+        this.myMyPreferences = myMyPreferences;
+    }
+}
