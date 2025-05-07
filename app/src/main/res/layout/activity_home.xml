@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="ltr"
-    android:backgroundTint="@color/background">
+    android:background="@color/background">
 
     <LinearLayout
         android:id="@+id/home_main_layout"
@@ -16,7 +16,6 @@
         android:padding="10dp"
         android:gravity="center_horizontal">
 
-        <!--  (Toolbar) -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/home_toolbar"
             android:layout_width="match_parent"
@@ -28,37 +27,84 @@
             app:navigationIcon="@drawable/ic_sidebar"
             android:layout_gravity="end" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="50dp">
+
         <TextView
             android:id="@+id/TV_hello_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Hello !"
-            android:textColor="#3F3F3F"
+            android:text="Hello !"
+            android:textColor="#db445b"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:id="@+id/home_TV_app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="HearMeWatch"
-            android:textColor="#C05C92"
-            android:textSize="43sp"
-            android:textStyle="bold|italic"
-            android:layout_marginBottom="16dp"
-            />
+            android:textStyle="bold" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/home_IMG"
+            android:layout_width="250dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/img_logo_name"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="160dp"
-            android:layout_height="160dp" />
-
-
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/img_logo"/>
 
     </LinearLayout>
 
-    <!--  (Side Bar) -->
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="100dp"
+            android:layout_marginHorizontal="10dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/BTN_start_recording"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Start Recording"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/buttons"
+            android:textColor="@color/text_buttons"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/BTN_stop_recording"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Stop Recording"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/buttons"
+            android:textColor="@color/text_buttons"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/BTN_connect_watch"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Connect Watch"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:backgroundTint="@color/buttons"
+            android:textColor="@color/text_buttons"/>
+    </LinearLayout>
+
+</LinearLayout>
+
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/home_navigation_view"
         android:layout_width="wrap_content"
