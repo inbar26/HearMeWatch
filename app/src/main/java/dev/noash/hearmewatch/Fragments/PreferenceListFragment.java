@@ -14,14 +14,16 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import dev.noash.hearmewatch.Models.MyPreference;
 import dev.noash.hearmewatch.R;
+import dev.noash.hearmewatch.Utilities.DataBaseManager;
 
 public class PreferenceListFragment extends Fragment {
-
     private ListView LV_items;
-    private ArrayList<MyPreference> preferences;
+    private ArrayList<MyPreference> preferences = new ArrayList<>();
     private ArrayAdapter<MyPreference> adapter;
 
     @Nullable
@@ -29,21 +31,24 @@ public class PreferenceListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         LV_items = view.findViewById(R.id.LV_items);
-        preferences = loadPreferences();
+        HashMap<String, MyPreference> p = DataBaseManager.getUser().getMyPreferences().getList();
+        for (Map.Entry<String, MyPreference> entry : p.entrySet()) {
+            preferences.add(entry.getValue());
+        }
         setupListView();
         return view;
     }
 
-    private ArrayList<MyPreference> loadPreferences() {
-        ArrayList<MyPreference> list = new ArrayList<>();
-        list.add(new MyPreference("Name Calling", true));
-        list.add(new MyPreference("Dog Barking", true));
-        list.add(new MyPreference("Baby Crying", false));
-        list.add(new MyPreference("Ambulance Siren", true));
-        list.add(new MyPreference("Fire Alarm", false));
-        list.add(new MyPreference("Door Knock", true));
-        return list;
-    }
+//    private ArrayList<MyPreference> loadPreferences() {
+//        ArrayList<MyPreference> list = new ArrayList<>();
+//        list.add(new MyPreference("Name Calling", true));
+//        list.add(new MyPreference("Dog Barking", true));
+//        list.add(new MyPreference("Baby Crying", false));
+//        list.add(new MyPreference("Ambulance Siren", true));
+//        list.add(new MyPreference("Fire Alarm", false));
+//        list.add(new MyPreference("Door Knock", true));
+//        return list;
+//    }
 
     private void setupListView() {
         adapter = new ArrayAdapter<MyPreference>(requireContext(), R.layout.preference_layout, preferences) {
@@ -63,6 +68,11 @@ public class PreferenceListFragment extends Fragment {
                     toggle.setChecked(pref.getActive());
                     toggle.setOnCheckedChangeListener((buttonView, isChecked) -> pref.setActive(isChecked));
                 }
+
+                toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    pref.setActive(isChecked);
+                    DataBaseManager.updateUserPreferences(preferences);
+                });
 
                 return convertView;
             }

@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:allowBackup="true"
@@ -18,7 +23,10 @@
             android:name=".Activities.PreferencesActivity"
             android:exported="false">
         </activity>
-
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:exported="false">
+        </activity>
         <activity
             android:name=".Activities.HomeActivity"
             android:exported="false">
@@ -33,6 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".Foreground.MyForegroundService"
+            android:foregroundServiceType="microphone"
+            android:exported="false"/>
     </application>
 
 </manifest>

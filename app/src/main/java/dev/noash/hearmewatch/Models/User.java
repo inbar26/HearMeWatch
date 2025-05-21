@@ -5,11 +5,16 @@ import java.util.ArrayList;
 
 public class User {
         private String id;
-        private String fName;
-        private String lName;
+        private String Name;
         private String email;
-        private ArrayList<MyPreference> myMyPreferences = new ArrayList<>();
+        private PreferenceList myPreferences;
         public User() {}
+        public User(User user) {
+            this.id = user.getId();
+            this.Name = user.getName();
+            this.email = user.getEmail();
+            this.myPreferences = new PreferenceList();
+        }
 
         public String getId() {
             return id;
@@ -20,20 +25,20 @@ public class User {
             return this;
         }
 
-    public String getfName() {
-        return fName;
+    public String getName() {
+        return Name;
     }
 
-    public void setfName(String fName) {
-        this.fName = fName;
+    public void setName(String name) {
+        Name = name;
     }
 
-    public String getlName() {
-        return lName;
+    public PreferenceList getMyPreferences() {
+        return myPreferences;
     }
 
-    public void setlName(String lName) {
-        this.lName = lName;
+    public void setMyPreferences(PreferenceList myPreferences) {
+        this.myPreferences = myPreferences;
     }
 
     public String getEmail() {
@@ -44,11 +49,4 @@ public class User {
         this.email = email;
     }
 
-    public ArrayList<MyPreference> getMyMyPreferences() {
-        return myMyPreferences;
-    }
-
-    public void setMyMyPreferences(ArrayList<MyPreference> myMyPreferences) {
-        this.myMyPreferences = myMyPreferences;
-    }
 }

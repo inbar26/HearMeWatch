@@ -13,19 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp"
         android:gravity="center_horizontal">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/home_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="60dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title=" "
             android:gravity="center"
             app:navigationIcon="@drawable/ic_sidebar"
-            android:layout_gravity="end" />
+            android:layout_gravity="end"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:iconSize="45dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,16 +34,16 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="50dp">
+        android:layout_margin="16dp">
 
         <TextView
             android:id="@+id/TV_hello_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello !"
+            android:hint="Hello !"
             android:textColor="#db445b"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:gravity="center_horizontal"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="250dp"
@@ -60,11 +61,11 @@
 
         <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="250dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="100dp"
-            android:layout_marginHorizontal="10dp">
+        android:layout_marginBottom="50dp"
+        android:layout_marginHorizontal="16dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/BTN_start_recording"
@@ -113,5 +114,6 @@
         android:background="@android:color/white"
         app:menu="@menu/drawer_menu"
         android:layoutDirection="ltr"/>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
