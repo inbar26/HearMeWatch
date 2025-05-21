@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class WavUtils {
+public class WavEncoder {
 
     public static void saveAsWav(byte[] audioData, int sampleRate, File outputFile) throws IOException {
         FileOutputStream out = new FileOutputStream(outputFile);

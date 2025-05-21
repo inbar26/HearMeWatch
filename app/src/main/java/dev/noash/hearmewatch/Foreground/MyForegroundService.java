@@ -1,6 +1,5 @@
 package dev.noash.hearmewatch.Foreground;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,11 +13,18 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
+
+import java.io.File;
+import java.io.IOException;
+
+import dev.noash.hearmewatch.Utilities.WavEncoder;
 
 public class MyForegroundService extends Service {
 
@@ -27,8 +33,6 @@ public class MyForegroundService extends Service {
     private Runnable runnable;
     private AudioRecord audioRecord;
     private boolean isRecording = false;
-    private int bufferSize;
-    private byte[] audioBuffer;
 
     @Override
     public void onCreate() {
@@ -38,6 +42,7 @@ public class MyForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("SERVICE", "onStartCommand called");
         createNotificationChannel();
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -48,97 +53,121 @@ public class MyForegroundService extends Service {
 
         startForeground(1, notification);
         startRecording();
-        //startListening();
 
         return START_STICKY;
     }
 
     private void startRecording() {
-        bufferSize = AudioRecord.getMinBufferSize(
-                16000,
+        if (isRecording) {
+            Log.d("SERVICE", "Recording already in progress, skipping startRecording()");
+            return;
+        }
+        int sampleRate = 16000;
+        int bufferSize = AudioRecord.getMinBufferSize(
+                sampleRate,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT
         );
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_GRANTED) {
-            audioRecord = new AudioRecord(
-                    MediaRecorder.AudioSource.MIC,
-                    16000,
-                    AudioFormat.CHANNEL_IN_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT,
-                    bufferSize
-            );
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        audioRecord = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                sampleRate,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize
+        );
 
-            audioBuffer = new byte[bufferSize];
+        audioRecord.startRecording();
+        isRecording = true;
 
-            audioRecord.startRecording();
-            isRecording = true;
+        new Thread(() -> {
+            while (isRecording) {
+                try {
+                    // One second call (at 16KHz with 2 bytes per sample = 32000 bytes)
+                    int bytesPerSecond = sampleRate * 2;
+                    byte[] buffer = new byte[bytesPerSecond];
+                    int read = audioRecord.read(buffer, 0, buffer.length);
 
-            new Thread(() -> {
-                while (isRecording) {
-                    int read = audioRecord.read(audioBuffer, 0, bufferSize);
                     if (read > 0) {
-                        handleAudioData(audioBuffer, read);
+                        saveBufferAsWav(buffer, read, sampleRate);
                     }
-                }
-            }).start();
-        }
 
-    }
+                    Thread.sleep(1000); // לחכות שנייה בין הקלטות
 
-        private void handleAudioData ( byte[] data, int length){
-            new Handler(Looper.getMainLooper()).post(() -> {
-                Toast.makeText(MyForegroundService.this, "נקלטו " + length + " בייטים של אודיו", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-
-        @Nullable
-        @Override
-        public IBinder onBind (Intent intent){
-            return null;
-        }
-
-        private void createNotificationChannel () {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel serviceChannel = new NotificationChannel(
-                        CHANNEL_ID,
-                        "Foreground Service Channel",
-                        NotificationManager.IMPORTANCE_DEFAULT
-                );
-                NotificationManager manager = getSystemService(NotificationManager.class);
-                if (manager != null) {
-                    manager.createNotificationChannel(serviceChannel);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
+        }).start();
+    }
+    private void saveBufferAsWav(byte[] data, int length, int sampleRate) {
+        try {
+            File outputDir = getExternalFilesDir(null);
+            String fileName = "audio_" + System.currentTimeMillis() + ".wav";
+            File outputFile = new File(outputDir, fileName);
+
+            byte[] trimmed = new byte[length];
+            System.arraycopy(data, 0, trimmed, 0, length);
+
+            //Log.d("SERVICE", "Saving file: " + outputFile.getAbsolutePath());
+            WavEncoder.saveAsWav(trimmed, sampleRate, outputFile);
+
+            new Handler(Looper.getMainLooper()).post(() ->
+                    Toast.makeText(this, "הוקלט:\n" + fileName, Toast.LENGTH_SHORT).show()
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind (Intent intent){
+        return null; //no connection between activity and service
+    }
+
+    private void createNotificationChannel () {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.createNotificationChannel(serviceChannel);
+            }
+        }
+    }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        Log.d("SERVICE", "onDestroy called");
         isRecording = false;
+
         if (audioRecord != null) {
-            audioRecord.stop();
-            audioRecord.release();
+            try {
+                audioRecord.stop();
+            } catch (IllegalStateException e) {
+                Log.e("SERVICE", "audioRecord.stop() failed: " + e.getMessage());
+            }
+
+            try {
+                audioRecord.release();
+            } catch (Exception e) {
+                Log.e("SERVICE", "audioRecord.release() failed: " + e.getMessage());
+            }
+
             audioRecord = null;
         }
-        handler.removeCallbacks(runnable);
-    }
 
-//        private void startListening () {
-//            runnable = new Runnable() {
-//                @Override
-//                public void run() {
-//                    // כאן תכתבי את הלוגיקה של קליטת שמע
-//                    // בינתיים לצורך הדוגמה - נציג Toast
-//                    Toast.makeText(MyForegroundService.this, "שמעתי משהו!", Toast.LENGTH_SHORT).show();
-//
-//                    // נקבע לקרוא לעצמנו שוב בעוד 5 שניות
-//                    handler.postDelayed(this, 5000);
-//                }
-//            };
-//
-//            handler.post(runnable);
-//        }
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+
+        stopSelf();
+    }
 }
