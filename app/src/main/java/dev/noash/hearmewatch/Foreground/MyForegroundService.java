@@ -55,7 +55,7 @@ public class MyForegroundService extends Service {
 
     private void startRecording() {
         bufferSize = AudioRecord.getMinBufferSize(
-                16000, // דגימה ב-16kHz - איכות בינונית שמתאימה לדיבור
+                16000,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT
         );
@@ -79,7 +79,6 @@ public class MyForegroundService extends Service {
                 while (isRecording) {
                     int read = audioRecord.read(audioBuffer, 0, bufferSize);
                     if (read > 0) {
-                        // כאן יש לנו דאטה מהקלטת אודיו
                         handleAudioData(audioBuffer, read);
                     }
                 }
@@ -98,7 +97,7 @@ public class MyForegroundService extends Service {
         @Nullable
         @Override
         public IBinder onBind (Intent intent){
-            return null; // אנחנו לא רוצים חיבור בין האקטיביטי לשירות
+            return null;
         }
 
         private void createNotificationChannel () {
