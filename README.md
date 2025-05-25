@@ -31,6 +31,10 @@ People with hearing impairments often face challenges in detecting important sou
 - Jetpack Compose UI
 - JNI Integration for native inference
 
+ ## 👩‍💻 Developers
+- [Noa Sharabi](https://www.linkedin.com/in/noa-sharabi-32616329b/)
+- [Inbar Zafar](https://www.linkedin.com/in/inbarzafar/)
+
 ## Running the Project
 
 1. Clone the repository:
