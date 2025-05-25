@@ -1,6 +1,7 @@
 package dev.noash.hearmewatch.Models;
 
-
+import dev.noash.hearmewatch.Models.PreferenceList;
+;
 import java.util.ArrayList;
 
 public class User {

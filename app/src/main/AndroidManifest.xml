@@ -27,13 +27,10 @@
             android:name=".Activities.ProfileActivity"
             android:exported="false">
         </activity>
-        <activity
-            android:name=".Activities.HomeActivity"
-            android:exported="false">
-        </activity>
+
 
         <activity
-            android:name=".Activities.LoginActivity"
+            android:name=".Activities.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

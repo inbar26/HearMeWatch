@@ -21,10 +21,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
-import dev.noash.hearmewatch.Utilities.WavEncoder;
+import dev.noash.hearmewatch.EdgeImpulseProcessor;
+import dev.noash.hearmewatch.ModelHelper;
+import dev.noash.hearmewatch.YamnetRunner;
 
 public class MyForegroundService extends Service {
 
@@ -38,6 +41,12 @@ public class MyForegroundService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
+        try {
+            ModelHelper.initializeModels(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Log.d("SERVICE", "Foreground service created");
     }
 
     @Override
@@ -72,6 +81,7 @@ public class MyForegroundService extends Service {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         audioRecord = new AudioRecord(
                 MediaRecorder.AudioSource.MIC,
                 sampleRate,
@@ -86,16 +96,33 @@ public class MyForegroundService extends Service {
         new Thread(() -> {
             while (isRecording) {
                 try {
-                    // One second call (at 16KHz with 2 bytes per sample = 32000 bytes)
                     int bytesPerSecond = sampleRate * 2;
-                    byte[] buffer = new byte[bytesPerSecond];
-                    int read = audioRecord.read(buffer, 0, buffer.length);
+                    ByteBuffer buffer = ByteBuffer.allocateDirect(bytesPerSecond).order(ByteOrder.LITTLE_ENDIAN);
+                    int read = audioRecord.read(buffer, bytesPerSecond);
 
                     if (read > 0) {
-                        saveBufferAsWav(buffer, read, sampleRate);
+                        buffer.rewind();
+
+                        // Run Edge Impulse model
+                        float[] input = new float[read / 2];
+                        for (int i = 0; i < input.length; i++) {
+                            input[i] = buffer.getShort() / 32768f;
+                        }
+                        String resultEI = EdgeImpulseProcessor.runAudioInference(input);
+
+                        // Run YAMNet model
+                        buffer.rewind();
+                        String resultYAM = YamnetRunner.runOnBuffer(this, buffer);
+
+                        Log.d("EdgeImpulse", "Result: " + resultEI);
+                        Log.d("YAMNet", "Detected: " + resultYAM);
+
+                        new Handler(Looper.getMainLooper()).post(() ->
+                                Toast.makeText(this, "EI: " + resultEI + "\nYAM: " + resultYAM, Toast.LENGTH_SHORT).show()
+                        );
                     }
 
-                    Thread.sleep(1000); // לחכות שנייה בין הקלטות
+                    Thread.sleep(1000);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -103,33 +130,14 @@ public class MyForegroundService extends Service {
             }
         }).start();
     }
-    private void saveBufferAsWav(byte[] data, int length, int sampleRate) {
-        try {
-            File outputDir = getExternalFilesDir(null);
-            String fileName = "audio_" + System.currentTimeMillis() + ".wav";
-            File outputFile = new File(outputDir, fileName);
-
-            byte[] trimmed = new byte[length];
-            System.arraycopy(data, 0, trimmed, 0, length);
-
-            //Log.d("SERVICE", "Saving file: " + outputFile.getAbsolutePath());
-            WavEncoder.saveAsWav(trimmed, sampleRate, outputFile);
-
-            new Handler(Looper.getMainLooper()).post(() ->
-                    Toast.makeText(this, "הוקלט:\n" + fileName, Toast.LENGTH_SHORT).show()
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Nullable
     @Override
-    public IBinder onBind (Intent intent){
-        return null; //no connection between activity and service
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
-    private void createNotificationChannel () {
+    private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
