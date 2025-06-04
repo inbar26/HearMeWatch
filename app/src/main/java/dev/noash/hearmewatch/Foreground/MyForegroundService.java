@@ -33,7 +33,6 @@ public class MyForegroundService extends Service {
 
     private static final String CHANNEL_ID = "ForegroundServiceChannel";
     private Handler handler;
-    private Runnable runnable;
     private AudioRecord audioRecord;
     private boolean isRecording = false;
 
@@ -51,7 +50,6 @@ public class MyForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("SERVICE", "onStartCommand called");
         createNotificationChannel();
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -61,26 +59,34 @@ public class MyForegroundService extends Service {
                 .build();
 
         startForeground(1, notification);
+
+        Log.d("SERVICE", "onStartCommand called");
+
         startRecording();
 
         return START_STICKY;
     }
 
+
     private void startRecording() {
         if (isRecording) {
-            Log.d("SERVICE", "Recording already in progress, skipping startRecording()");
+            Log.d("SERVICE", "Recording already in progress");
             return;
         }
-        int sampleRate = 16000;
+
+        final int sampleRate = 16000;
+        final int targetBytes = sampleRate * 2; // 16000 samples * 2 bytes = 32000 bytes
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            Log.e("SERVICE", "RECORD_AUDIO permission not granted");
+            return;
+        }
+
         int bufferSize = AudioRecord.getMinBufferSize(
                 sampleRate,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT
         );
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
 
         audioRecord = new AudioRecord(
                 MediaRecorder.AudioSource.MIC,
@@ -94,38 +100,42 @@ public class MyForegroundService extends Service {
         isRecording = true;
 
         new Thread(() -> {
+            ByteBuffer fullBuffer = ByteBuffer.allocateDirect(targetBytes).order(ByteOrder.LITTLE_ENDIAN);
+
             while (isRecording) {
-                try {
-                    int bytesPerSecond = sampleRate * 2;
-                    ByteBuffer buffer = ByteBuffer.allocateDirect(bytesPerSecond).order(ByteOrder.LITTLE_ENDIAN);
-                    int read = audioRecord.read(buffer, bytesPerSecond);
+                ByteBuffer tempBuffer = ByteBuffer.allocateDirect(2048).order(ByteOrder.LITTLE_ENDIAN);
+                int read = audioRecord.read(tempBuffer, 2048);
 
-                    if (read > 0) {
-                        buffer.rewind();
-
-                        // Run Edge Impulse model
-                        float[] input = new float[read / 2];
-                        for (int i = 0; i < input.length; i++) {
-                            input[i] = buffer.getShort() / 32768f;
-                        }
-                        String resultEI = EdgeImpulseProcessor.runAudioInference(input);
-
-                        // Run YAMNet model
-                        buffer.rewind();
-                        String resultYAM = YamnetRunner.runOnBuffer(this, buffer);
-
-                        Log.d("EdgeImpulse", "Result: " + resultEI);
-                        Log.d("YAMNet", "Detected: " + resultYAM);
-
-                        new Handler(Looper.getMainLooper()).post(() ->
-                                Toast.makeText(this, "EI: " + resultEI + "\nYAM: " + resultYAM, Toast.LENGTH_SHORT).show()
-                        );
+                if (read > 0) {
+                    tempBuffer.rewind();
+                    while (tempBuffer.hasRemaining() && fullBuffer.hasRemaining()) {
+                        fullBuffer.put(tempBuffer.get());
                     }
 
-                    Thread.sleep(1000);
+                    if (!fullBuffer.hasRemaining()) {
+                        try {
+                            fullBuffer.rewind();
+                            float[] inputEI = new float[targetBytes / 2];
+                            for (int i = 0; i < inputEI.length; i++) {
+                                inputEI[i] = fullBuffer.getShort() / 32768f;
+                            }
+                            String resultEI = EdgeImpulseProcessor.runAudioInference(inputEI);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                            fullBuffer.rewind();
+                            String resultYAM = YamnetRunner.runOnBuffer(this, fullBuffer);
+
+                            Log.d("EdgeImpulse", "Result: " + resultEI);
+                            Log.d("YAMNet", "Detected: " + resultYAM);
+
+                            new Handler(Looper.getMainLooper()).post(() ->
+                                    Toast.makeText(this, "EI: " + resultEI + "\nYAM: " + resultYAM, Toast.LENGTH_SHORT).show()
+                            );
+                        } catch (Exception e) {
+                            Log.e("SERVICE", "Error during inference: " + e.getMessage());
+                        }
+
+                        fullBuffer.clear();
+                    }
                 }
             }
         }).start();
@@ -172,8 +182,8 @@ public class MyForegroundService extends Service {
             audioRecord = null;
         }
 
-        if (handler != null && runnable != null) {
-            handler.removeCallbacks(runnable);
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
         }
 
         stopSelf();
