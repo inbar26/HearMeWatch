@@ -33,6 +33,8 @@ public class MyForegroundService extends Service {
 
     private static final String CHANNEL_ID = "ForegroundServiceChannel";
     private Handler handler;
+    private Runnable runnable;
+
     private AudioRecord audioRecord;
     private boolean isRecording = false;
 
