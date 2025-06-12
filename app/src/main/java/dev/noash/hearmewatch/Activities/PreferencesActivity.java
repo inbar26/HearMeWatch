@@ -3,20 +3,14 @@ package dev.noash.hearmewatch.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import java.util.ArrayList;
-
 import dev.noash.hearmewatch.Fragments.PreferenceListFragment;
-import dev.noash.hearmewatch.Models.MyPreference;
-import dev.noash.hearmewatch.Models.PreferenceList;
 import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.R;
-import dev.noash.hearmewatch.Utilities.DataBaseManager;
 
 public class PreferencesActivity extends AppCompatActivity {
 
@@ -47,14 +41,14 @@ public class PreferencesActivity extends AppCompatActivity {
         });
     }
 
-//    private void savePreferencesAndReturnToHomePage() {
+    //    private void savePreferencesAndReturnToHomePage() {
 //        if (preferenceListFragment != null) {
 //            ArrayList<MyPreference> updatedPreferences = preferenceListFragment.getUpdatedPreferences();
 //            PreferenceList pl = new PreferenceList(updatedPreferences);
 //            DataBaseManager.updateUserPreferences(pl)
 //                    .addOnCompleteListener(task -> returnToHomePage());
 //        } else {
-//            Toast.makeText(this, "אירעה שגיאה", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show();
 //        }
 //    }
     private void returnToHomePage() {

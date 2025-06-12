@@ -1,7 +1,5 @@
 package dev.noash.hearmewatch.Activities;
 
-import static com.firebase.ui.auth.data.model.User.getUser;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,7 +10,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,10 +22,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 
+
 import dev.noash.hearmewatch.Foreground.MyForegroundService;
 import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.R;
-import dev.noash.hearmewatch.Utilities.DataBaseManager;
+import dev.noash.hearmewatch.Utilities.DBManager;
+//import dev.noash.hearmewatch.Utilities.MessageSender;
+import dev.noash.hearmewatch.Utilities.SPManager;
 
 public class HomeActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -45,6 +45,15 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         findViews();
         initViews();
+        SPManager.init(getApplicationContext());
+        SPManager.getInstance().logAllPreferences();
+
+//        Wearable.getNodeClient(getApplicationContext()).getConnectedNodes()
+//                .addOnSuccessListener(nodes -> {
+//                    for (Node node : nodes) {
+//                        Log.d("WATCH111", "Connected node: " + node.getDisplayName());
+//                    }
+//                });
     }
     private void initViews() {
         MyApp.setStatusBar(getWindow(), this);
@@ -59,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setHelloMessage() {
         String firstName;
-        firstName = DataBaseManager.getUser().getName();
+        firstName = DBManager.getUser().getName();
         if(firstName == null)
             helloMessage.setText("Hello");
         else {
@@ -113,10 +122,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void connectWatch() {
-        connectWatchBtn.setBackgroundColor(Color.parseColor("#77BABA"));
-        connectWatchBtn.setClickable(false);
-    }
 
+    }
 
 
     private void startMyService() {
@@ -167,4 +174,5 @@ public class HomeActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 REQUEST_RECORD_AUDIO_PERMISSION);
     }
+
 }

@@ -12,7 +12,7 @@
         android:id="@+id/IMG_logo"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        app:srcCompat="@drawable/img_logo_with_app_name"/>
+        app:srcCompat="@drawable/img_logo_with_app_name" />
 
     <ImageView
         android:id="@+id/TV_title"

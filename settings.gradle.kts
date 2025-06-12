@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "HearMeWatch"
 include(":app")
- 
+include(":wearos")
+include(":app", ":wearos")

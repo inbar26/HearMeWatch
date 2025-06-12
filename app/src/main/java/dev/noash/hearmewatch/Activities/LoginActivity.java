@@ -18,11 +18,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Collections;
+import java.util.HashMap;
 
+import dev.noash.hearmewatch.Models.MyPreference;
 import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.R;
-import dev.noash.hearmewatch.Models.User;
-import dev.noash.hearmewatch.Utilities.DataBaseManager;
+import dev.noash.hearmewatch.Utilities.DBManager;
+import dev.noash.hearmewatch.Utilities.SPManager;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> signInLauncher;
@@ -33,8 +35,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApp.setStatusBar(getWindow(), this);
-
-        FirebaseUser user = DataBaseManager.isUserLoggedIn();
+        SPManager.init(getApplicationContext());
+        SPManager.getInstance().clearAllPreferences();
+        FirebaseUser user = DBManager.isUserLoggedIn();
         if(user == null) {
             showLoginScreen();
         } else {
@@ -46,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         initSignInLauncher();
         findViews();
         initViews();
+
     }
     private void initSignInLauncher() {
         signInLauncher = registerForActivityResult(
@@ -53,9 +57,9 @@ public class LoginActivity extends AppCompatActivity {
                 result -> {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
-                        DataBaseManager.saveNewUserToDB(user).addOnCompleteListener(task -> moveToHomePage());
+                        DBManager.saveNewUserToDB(user).addOnCompleteListener(task -> moveToHomePage());
                     } else {
-                        Toast.makeText(this, "ההתחברות נכשלה או בוטלה", LENGTH_SHORT).show();
+                        Toast.makeText(this, "Login failed or canceled", LENGTH_SHORT).show();
                     }
                 }
         );
@@ -82,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         signInLauncher.launch(signInIntent);
     }
     private void checkUserInDB(FirebaseUser user) {
-        DataBaseManager.addUserToDB_ifNecessary(user, new DataBaseManager.CallBack<Boolean>() {
+        DBManager.addUserToDB_ifNecessary(user, new DBManager.CallBack<Boolean>() {
             @Override
             public void res(Boolean res) {
                 if(res) {
@@ -96,11 +100,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loadDataAndMoveToHomePage() {
-        DataBaseManager.loadUserDataFromDB(new DataBaseManager.CallBack<Boolean>() {
+        DBManager.loadUserDataFromDB(new DBManager.CallBack<Boolean>() {
             @Override
             public void res(Boolean res) {
-                if(res)
+                if(res) {
+                    HashMap<String, MyPreference> temp = DBManager.getUser().getMyPreferences().getList();
+                    for (MyPreference val : temp.values()) {
+                        SPManager.getInstance().setNotificationPreference(val.getName(), val.getActive());
+                    }
                     moveToHomePage();
+                }
+
             }
         });
     }

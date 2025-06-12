@@ -2,12 +2,9 @@ package dev.noash.hearmewatch.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,11 +12,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import dev.noash.hearmewatch.Models.PreferenceList;
-import dev.noash.hearmewatch.Models.User;
 import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.R;
-import dev.noash.hearmewatch.Utilities.DataBaseManager;
+import dev.noash.hearmewatch.Utilities.DBManager;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -44,31 +39,31 @@ public class ProfileActivity extends AppCompatActivity {
         initReturnButton();
         BTN_submit.setOnClickListener(v -> updateUserDetails());
         backBtn.setOnClickListener(v -> returnToHomePage());
-        String name = DataBaseManager.getUser().getName();
-        if(name != null) {
+        String name = DBManager.getUser().getName();
+        if(name != null && !name.equals("")) {
             //ET_fName.setText(name.split(" ")[0]);
             ET_fName1.setText(name.split(" ")[0]);
             ET_lName.setText(name.split(" ")[1]);
-                   // setText(name.split(" ")[1]);
+            // setText(name.split(" ")[1]);
         }
-        ET_email.setText(DataBaseManager.getUser().getEmail());
+        ET_email.setText(DBManager.getUser().getEmail());
 
     }
 
     private void updateUserDetails() {
         String name;
 
-       // String fName = ET_fName.getEditText().toString().trim();
+        // String fName = ET_fName.getEditText().toString().trim();
         String lName = ET_lName.getText().toString().trim();
         String fName = ET_fName1.getText().toString().trim();
 
         if (fName.isEmpty() || lName.isEmpty()) {
-            Toast.makeText(this, "אנא מלאי את כל השדות", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
         name=fName.trim()+" " +lName.trim();
 
-        DataBaseManager.updateUserName(name).addOnCompleteListener(task -> Toast.makeText(this, "משתמש עודכן בהצלחה", Toast.LENGTH_SHORT).show());
+        DBManager.updateUserName(name).addOnCompleteListener(task -> Toast.makeText(this, "User was updated successfully", Toast.LENGTH_SHORT).show());
     }
 
     private void findViews() {

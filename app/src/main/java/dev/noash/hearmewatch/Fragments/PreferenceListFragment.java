@@ -19,11 +19,11 @@ import java.util.Map;
 
 import dev.noash.hearmewatch.Models.MyPreference;
 import dev.noash.hearmewatch.R;
-import dev.noash.hearmewatch.Utilities.DataBaseManager;
+import dev.noash.hearmewatch.Utilities.DBManager;
 
 public class PreferenceListFragment extends Fragment {
     private ListView LV_items;
-    private ArrayList<MyPreference> preferences = new ArrayList<>();
+    private final ArrayList<MyPreference> preferences = new ArrayList<>();
     private ArrayAdapter<MyPreference> adapter;
 
     @Nullable
@@ -31,7 +31,7 @@ public class PreferenceListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         LV_items = view.findViewById(R.id.LV_items);
-        HashMap<String, MyPreference> p = DataBaseManager.getUser().getMyPreferences().getList();
+        HashMap<String, MyPreference> p = DBManager.getUser().getMyPreferences().getList();
         for (Map.Entry<String, MyPreference> entry : p.entrySet()) {
             preferences.add(entry.getValue());
         }
@@ -71,7 +71,7 @@ public class PreferenceListFragment extends Fragment {
 
                 toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     pref.setActive(isChecked);
-                    DataBaseManager.updateUserPreferences(preferences);
+                    DBManager.updateUserPreferences(preferences);
                 });
 
                 return convertView;

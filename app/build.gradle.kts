@@ -92,4 +92,7 @@ dependencies {
     // Glide & Annotation Processor
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+
+    //wearos
+    implementation(libs.play.services.wearable.v1810)
 }

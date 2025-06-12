@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
@@ -20,6 +21,9 @@ import android.Manifest;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+
+import com.google.android.gms.wearable.MessageClient;
+import com.google.android.gms.wearable.Wearable;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -69,7 +73,6 @@ public class MyForegroundService extends Service {
         return START_STICKY;
     }
 
-
     private void startRecording() {
         if (isRecording) {
             Log.d("SERVICE", "Recording already in progress");
@@ -77,7 +80,7 @@ public class MyForegroundService extends Service {
         }
 
         final int sampleRate = 16000;
-        final int targetBytes = sampleRate * 2; // 16000 samples * 2 bytes = 32000 bytes
+        final int targetBytes = sampleRate * 2;
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             Log.e("SERVICE", "RECORD_AUDIO permission not granted");
@@ -129,6 +132,11 @@ public class MyForegroundService extends Service {
                             Log.d("EdgeImpulse", "Result: " + resultEI);
                             Log.d("YAMNet", "Detected: " + resultYAM);
 
+                            // Example condition - adjust to your logic
+                            if (resultYAM.toLowerCase().contains("speech")) {
+                                sendMessageToWatch(this, resultYAM);
+                            }
+
                             new Handler(Looper.getMainLooper()).post(() ->
                                     Toast.makeText(this, "EI: " + resultEI + "\nYAM: " + resultYAM, Toast.LENGTH_SHORT).show()
                             );
@@ -142,6 +150,32 @@ public class MyForegroundService extends Service {
             }
         }).start();
     }
+
+    private void sendMessageToWatch(Context context, String message) {
+        Log.d("SEND_TO_WATCH", "📤 Preparing to send message: " + message);
+
+        Wearable.getNodeClient(context).getConnectedNodes().addOnSuccessListener(nodes -> {
+            if (nodes.isEmpty()) {
+                Log.e("SEND_TO_WATCH", "❌ No connected nodes — cannot send message!");
+            } else {
+                for (com.google.android.gms.wearable.Node node : nodes) {
+                    Log.d("SEND_TO_WATCH", "✅ Connected to node: " + node.getDisplayName() + " (" + node.getId() + ")");
+                    Wearable.getMessageClient(context).sendMessage(
+                            node.getId(),
+                            "/sound_alert",
+                            message.getBytes()
+                    ).addOnSuccessListener(aVoid -> {
+                        Log.d("SEND_TO_WATCH", "✅ Message sent to " + node.getDisplayName());
+                    }).addOnFailureListener(e -> {
+                        Log.e("SEND_TO_WATCH", "❌ Failed to send message: " + e.getMessage());
+                    });
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("SEND_TO_WATCH", "❌ Failed to get connected nodes: " + e.getMessage());
+        });
+    }
+
 
     @Nullable
     @Override
