@@ -95,4 +95,7 @@ dependencies {
 
     //wearos
     implementation(libs.play.services.wearable.v1810)
+
+    //Google
+    implementation (libs.material.v1110)
 }

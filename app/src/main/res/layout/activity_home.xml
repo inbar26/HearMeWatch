@@ -13,99 +13,136 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:background="#edf6f9">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/home_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
+            android:background="@android:color/white"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title=" "
-            android:gravity="center"
-            app:navigationIcon="@drawable/ic_sidebar"
-            android:layout_gravity="end"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            app:iconSize="45dp"/>
+            app:navigationIcon="@drawable/ic_sidebar">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dashboard"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_centerInParent="true"
+                    android:translationX="-38dp"
+                    android:translationY="-10dp"/>
+
+                <TextView
+                    android:id="@+id/toolbar_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Voice Recording Assistant"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_below="@id/toolbar_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="0dp"
+                    android:translationX="-38dp"
+                    android:translationY="-10dp"/>
+
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:id="@+id/TV_hello_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center_horizontal"
+            android:hint="Hello "
+            android:textColor="#0a0908"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/TV_hello_message_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/TV_hello_message"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:text="Ready to start recording?"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:translationY="-10dp" />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="201dp"
+            android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:layout_weight="1"
+            android:layout_weight="0.2"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/TV_hello_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:hint="Hello !"
-                android:textColor="#db445b"
-                android:textSize="24sp" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="180dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/img_logo" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="250dp"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                app:srcCompat="@drawable/img_logo_name" />
 
 
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="180dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/img_logo" />
+
+            <!--            <com.google.android.material.imageview.ShapeableImageView-->
+            <!--                android:layout_width="250dp"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:layout_weight="0.5"-->
+            <!--                app:srcCompat="@drawable/img_logo_name" />-->
         </LinearLayout>
 
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="50dp"
-        android:layout_marginHorizontal="16dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/BTN_start_recording"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Start Recording"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/buttons"
-            android:textColor="@color/text_buttons"/>
+            android:layout_height="250dp"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="30dp"
+            android:layout_marginHorizontal="16dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/BTN_stop_recording"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Stop Recording"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/buttons"
-            android:textColor="@color/text_buttons"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/BTN_start_recording"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:text="Start Recording"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/buttons"
+                android:textColor="@color/text_buttons" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/BTN_connect_watch"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Connect Watch"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:backgroundTint="@color/buttons"
-            android:textColor="@color/text_buttons"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/BTN_stop_recording"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:text="Stop Recording"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/buttons"
+                android:textColor="@color/text_buttons" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/BTN_connect_watch"
+                android:layout_width="300dp"
+                android:layout_height="70dp"
+                android:text="Connect Watch"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/buttons"
+                android:textColor="@color/text_buttons" />
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
-
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/home_navigation_view"
@@ -115,6 +152,4 @@
         android:background="@android:color/white"
         app:menu="@menu/drawer_menu"
         android:layoutDirection="ltr"/>
-
-
 </androidx.drawerlayout.widget.DrawerLayout>

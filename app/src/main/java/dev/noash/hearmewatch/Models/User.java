@@ -54,11 +54,11 @@ public class User {
     public void initMyPreferences() {
         ArrayList<MyPreference> defPreList = new ArrayList<>();
         defPreList.add(new MyPreference("Name Calling", true));
-        defPreList.add(new MyPreference("Dog Barking", false));
-        defPreList.add(new MyPreference("Baby Crying", false));
-        defPreList.add(new MyPreference("Ambulance Siren", true));
-        defPreList.add(new MyPreference("Fire Alarm", false));
-        defPreList.add(new MyPreference("Door Knock", true));
+        defPreList.add(new MyPreference("Dog", false));
+        defPreList.add(new MyPreference("Baby cry", false));
+        defPreList.add(new MyPreference("Ambulance (siren)", true));
+        defPreList.add(new MyPreference("Fire alarm", false));
+        defPreList.add(new MyPreference("Doorbell", true));
         this.myPreferences = new PreferenceList(defPreList);
     }
 }

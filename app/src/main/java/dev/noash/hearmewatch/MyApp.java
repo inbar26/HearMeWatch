@@ -15,7 +15,6 @@ import android.view.Window;
 import androidx.core.content.ContextCompat;
 
 
-
 import dev.noash.hearmewatch.Utilities.DBManager;
 
 import dev.noash.hearmewatch.Utilities.SPManager;
@@ -23,7 +22,6 @@ import dev.noash.hearmewatch.Utilities.SPManager;
 
 
 public class MyApp extends Application {
-
 
 
     @Override
@@ -47,6 +45,8 @@ public class MyApp extends Application {
         }
 
     }
+
+
 
 
 

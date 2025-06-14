@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -28,10 +29,14 @@
             android:name=".Activities.ProfileActivity"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".Activities.HomeActivity"
+            android:exported="false">
+        </activity>
 
 
         <activity
-            android:name=".Activities.HomeActivity"
+            android:name=".Activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

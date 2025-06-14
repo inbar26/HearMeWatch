@@ -41,10 +41,10 @@ public class PreferenceList {
 
     public void initList() {
         list.put("Name Calling", new MyPreference("Name Calling", true));
-        list.put("Dog Barking", new MyPreference("Dog Barking", false));
-        list.put("Baby Crying", new MyPreference("Baby Crying", false));
-        list.put("Ambulance Siren", new MyPreference("Ambulance Siren", true));
-        list.put("Fire Alarm", new MyPreference("Fire Alarm", false));
-        list.put("Door Knock", new MyPreference("Door Knock", true));
+        list.put("Dog", new MyPreference("Dog", false));
+        list.put("Baby cry", new MyPreference("Baby cry", false));
+        list.put("Ambulance (siren)", new MyPreference("Ambulance (siren)", true));
+        list.put("Fire alarm", new MyPreference("Fire alarm", false));
+        list.put("Doorbell", new MyPreference("Doorbell", true));
     }
 }

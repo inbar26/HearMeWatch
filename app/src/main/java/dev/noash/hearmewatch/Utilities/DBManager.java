@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import dev.noash.hearmewatch.Models.MyPreference;
 import dev.noash.hearmewatch.Models.User;
+import dev.noash.hearmewatch.MyApp;
 
 public class DBManager {
     private static DBManager DBManager;

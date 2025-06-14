@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="#FFFFFF"
         android:layoutDirection="ltr">
 
         <ImageButton
@@ -41,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#f1f1f1"
+        android:background="#edf6f9"
         android:padding="16dp"
         android:layoutDirection="ltr">
 

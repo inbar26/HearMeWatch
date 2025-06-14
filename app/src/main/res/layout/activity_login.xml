@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:padding="25dp"
-    android:orientation="vertical">
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/IMG_logo"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        app:srcCompat="@drawable/img_logo_with_app_name" />
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="#F8FAFC"
+    android:padding="24dp">
 
     <ImageView
         android:id="@+id/TV_title"
@@ -20,17 +16,54 @@
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitCenter"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="60dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/BTN_google"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="כניסה דרך Google"
-        android:textSize="18sp"
-        app:cornerRadius="10dp"
+        android:text="Welcome to HearMeWatch!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#1E293B"
+        android:layout_marginBottom="8dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/subtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in to begin your journey"
+        android:textSize="16sp"
+        android:textColor="#64748B"
+        android:gravity="center"
+        android:layout_marginBottom="30dp" />
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <com.google.android.material.imageview.ShapeableImageView-->
+<!--            android:layout_width="180dp"-->
+<!--            android:layout_height="180dp"-->
+<!--            app:srcCompat="@drawable/img_logo"/>-->
+
+<!--    </LinearLayout>-->
+
+    <Button
+        android:id="@+id/BTN_google"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Continue with Google"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/buttons"
+        android:textColor="@color/text_buttons"
         android:padding="12dp"
-        android:backgroundTint="#d86553"
-        android:textColor="@android:color/white"/>
+        android:elevation="2dp"
+        android:layout_marginBottom="16dp" />
 
 </LinearLayout>

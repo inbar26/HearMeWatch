@@ -72,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
         if(firstName == null)
             helloMessage.setText("Hello");
         else {
-            helloMessage.setText("Hello " + firstName.split(" ")[0]);
+            helloMessage.setText("Hello, " + firstName.split(" ")[0] + "!");
         }
 
     }
