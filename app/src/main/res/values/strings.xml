@@ -3,9 +3,9 @@
     <string name="open" translatable="false">Open</string>
     <string name="close" translatable="false">Close</string>
     <string name="profile" translatable="false">Profile</string>
-    <string name="privacy" translatable="false">Privacy</string>
     <string name="preferences" translatable="false">Preferences</string>
-    <string name="design" translatable="false">Design</string>
+    <string name="guide" translatable="false">Guide</string>
     <string name="log_out" translatable="false">Log Out</string>
+
 
 </resources>

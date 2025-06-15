@@ -10,6 +10,7 @@
     <color name="background">#f1f1f1</color>
     <color name="home_background">#F9FFFF</color>
     <color name="buttons">#83c5be</color>
+    <color name="buttons_disabled">#c6e7e3</color>
     <color name="text_buttons">#F0F8F8</color>
     <color name="statusBar">#2b7a78</color>
 </resources>

@@ -1,25 +1,27 @@
 package dev.noash.hearmewatch.Fragments;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.os.Bundle;
+
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.SwitchCompat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
-import dev.noash.hearmewatch.Models.MyPreference;
 import dev.noash.hearmewatch.R;
+import dev.noash.hearmewatch.Models.MyPreference;
 import dev.noash.hearmewatch.Utilities.DBManager;
+import dev.noash.hearmewatch.Utilities.SPManager;
 
 public class PreferenceListFragment extends Fragment {
     private ListView LV_items;
@@ -31,24 +33,13 @@ public class PreferenceListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         LV_items = view.findViewById(R.id.LV_items);
-        HashMap<String, MyPreference> p = DBManager.getUser().getMyPreferences().getList();
+        HashMap<String, MyPreference> p = DBManager.getInstance().getUser().getMyPreferences().getList();
         for (Map.Entry<String, MyPreference> entry : p.entrySet()) {
             preferences.add(entry.getValue());
         }
         setupListView();
         return view;
     }
-
-//    private ArrayList<MyPreference> loadPreferences() {
-//        ArrayList<MyPreference> list = new ArrayList<>();
-//        list.add(new MyPreference("Name Calling", true));
-//        list.add(new MyPreference("Dog Barking", true));
-//        list.add(new MyPreference("Baby Crying", false));
-//        list.add(new MyPreference("Ambulance Siren", true));
-//        list.add(new MyPreference("Fire Alarm", false));
-//        list.add(new MyPreference("Door Knock", true));
-//        return list;
-//    }
 
     private void setupListView() {
         adapter = new ArrayAdapter<MyPreference>(requireContext(), R.layout.preference_layout, preferences) {
@@ -60,6 +51,7 @@ public class PreferenceListFragment extends Fragment {
                 }
 
                 MyPreference pref = getItem(position);
+
                 TextView name = convertView.findViewById(R.id.TV_pName);
                 SwitchCompat toggle = convertView.findViewById(R.id.SC_active);
 
@@ -71,7 +63,7 @@ public class PreferenceListFragment extends Fragment {
 
                 toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     pref.setActive(isChecked);
-                    DBManager.updateUserPreferences(preferences);
+                    DBManager.getInstance().updateUserPreference(pref).addOnCompleteListener(task -> SPManager.getInstance().setNotificationPreference(pref.getName(), isChecked));
                 });
 
                 return convertView;

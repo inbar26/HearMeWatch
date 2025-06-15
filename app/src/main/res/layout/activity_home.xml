@@ -131,16 +131,6 @@
                 android:backgroundTint="@color/buttons"
                 android:textColor="@color/text_buttons" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/BTN_connect_watch"
-                android:layout_width="300dp"
-                android:layout_height="70dp"
-                android:text="Connect Watch"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/buttons"
-                android:textColor="@color/text_buttons" />
         </LinearLayout>
     </LinearLayout>
 

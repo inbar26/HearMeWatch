@@ -2,68 +2,70 @@ package dev.noash.hearmewatch.Activities;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.Toast;
+import android.content.Intent;
+import android.widget.ImageView;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 
 import java.util.Collections;
-import java.util.HashMap;
 
-import dev.noash.hearmewatch.Models.MyPreference;
-import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.R;
+import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.SPManager;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> signInLauncher;
-    private MaterialButton googleBtn;
-    ImageView imageView;
+    private Button googleBtn;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApp.setStatusBar(getWindow(), this);
+        DBManager.init(getApplicationContext());
         SPManager.init(getApplicationContext());
-        SPManager.getInstance().clearAllPreferences();
-        FirebaseUser user = DBManager.isUserLoggedIn();
+
+        FirebaseUser user = DBManager.getInstance().fetchCurrentUser();
         if(user == null) {
-            showLoginScreen();
+            showLoginScreen(); //user not found
         } else {
-            checkUserInDB(user);
+            handleUserEntry(user); //user exists
         }
     }
+
     private void showLoginScreen() {
         setContentView(R.layout.activity_login);
         initSignInLauncher();
         findViews();
         initViews();
-
     }
+
     private void initSignInLauncher() {
         signInLauncher = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
                 result -> {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
-                        DBManager.saveNewUserToDB(user).addOnCompleteListener(task -> moveToHomePage());
+                        DBManager.getInstance().saveNewUserToDB(user).addOnCompleteListener(task -> loadDataAndMoveToHomePage());
                     } else {
                         Toast.makeText(this, "Login failed or canceled", LENGTH_SHORT).show();
                     }
                 }
         );
     }
+
     private void findViews() {
         imageView = findViewById(R.id.TV_title);
         googleBtn = findViewById(R.id.BTN_google);
@@ -75,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 .load(R.drawable.gif_logo)
                 .into(imageView);
     }
+
     private void signUp() {
         Intent signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
@@ -85,14 +88,14 @@ public class LoginActivity extends AppCompatActivity {
 
         signInLauncher.launch(signInIntent);
     }
-    private void checkUserInDB(FirebaseUser user) {
-        DBManager.addUserToDB_ifNecessary(user, new DBManager.CallBack<Boolean>() {
+
+    private void handleUserEntry(FirebaseUser user) {
+        DBManager.getInstance().addUserToDB_ifNecessary(user, new DBManager.CallBack<Boolean>() {
             @Override
             public void res(Boolean res) {
-                if(res) {
+                if(res) { //user exists in DB
                     loadDataAndMoveToHomePage();
-                    //moveToHomePage();
-                } else {
+                } else { //something went wrong
                     showLoginScreen();
                 }
             }
@@ -100,20 +103,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loadDataAndMoveToHomePage() {
-        DBManager.loadUserDataFromDB(new DBManager.CallBack<Boolean>() {
+        DBManager.getInstance().loadUserDataFromDB(new DBManager.CallBack<Boolean>() {
             @Override
             public void res(Boolean res) {
-                if(res) {
-                    HashMap<String, MyPreference> temp = DBManager.getUser().getMyPreferences().getList();
-                    for (MyPreference val : temp.values()) {
-                        SPManager.getInstance().setNotificationPreference(val.getName(), val.getActive());
-                    }
+                if(res) { //data load successfully
                     moveToHomePage();
                 }
-
             }
         });
     }
+
     private void moveToHomePage() {
         Intent intent = new Intent(this, HomeActivity.class);
         Bundle bundle = new Bundle();
@@ -122,4 +121,3 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 }
-

@@ -1,15 +1,20 @@
 package dev.noash.hearmewatch.Utilities;
 
+import android.util.Log;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.Map;
 
+import dev.noash.hearmewatch.Models.MyPreference;
+import dev.noash.hearmewatch.Models.PreferenceList;
+
 public class SPManager {
     private static SPManager spManager;
-    private static final String PREFS_NAME = "user_prefs";
-    private static SharedPreferences sharedPreferences;
+    private static SharedPreferences sp;
+    private static final String PREFS_FILE_NAME = "user_prefs";
+    private static final String IS_SERVICE_RUNNING_KEY = "is_service_running";
+    private static final String NAME_KEY = "name";
 
     public static void init(Context context) {
         if (spManager == null) {
@@ -20,6 +25,9 @@ public class SPManager {
             }
         }
     }
+    public SPManager(Context context) {
+        sp = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+    }
 
     public static SPManager getInstance() {
         if (spManager == null) {
@@ -28,34 +36,73 @@ public class SPManager {
         return spManager;
     }
 
-    public SPManager(Context context) {
-        sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+    public void savePreferencesFromList(PreferenceList preferenceList) {
+        SharedPreferences.Editor editor = sp.edit();
+
+        for (Map.Entry<String, MyPreference> entry : preferenceList.getList().entrySet()) {
+            String name = entry.getKey();
+            boolean isActive = entry.getValue().getActive();
+            editor.putBoolean(name, isActive);
+        }
+
+        editor.apply();
     }
 
     public void setNotificationPreference(String type, boolean isEnabled) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(type, isEnabled);
         editor.apply();
     }
-
-    public boolean isNotificationEnabled(String type) {
-        return sharedPreferences.getBoolean(type, true); // ברירת מחדל: true
+    public boolean isServiceRunning() {
+        return getBoolean(IS_SERVICE_RUNNING_KEY, false);
+    }
+    public void setIsServiceRunning(boolean value) {
+        setBoolean(IS_SERVICE_RUNNING_KEY, value);
     }
 
-    public void clearAllPreferences() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
+    public String getName() {
+        return getString(NAME_KEY, "Not Found");
+    }
+    public void setName(String value) {
+        setString(NAME_KEY, value);
+    }
+
+    public boolean getBoolean(String key, boolean defaultValue) {
+        return sp.getBoolean(key, defaultValue);
+    }
+    public void setBoolean(String key, boolean value) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(key, value);
         editor.apply();
     }
 
+    public void setString(String key, String value) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+    public String getString(String key, String defaultValue) {
+        return sp.getString(key, defaultValue);
+    }
+
+    public boolean isNotificationEnabled(String type) {
+        return sp.getBoolean(type, false); // default : false
+    }
+
     public void removePreference(String type) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = sp.edit();
         editor.remove(type);
         editor.apply();
     }
 
+    public void clearAllPreferences() {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();
+        editor.apply();
+    }
+
     public void logAllPreferences() {
-        Map<String, ?> allPrefs = sharedPreferences.getAll();
+        Map<String, ?> allPrefs = sp.getAll();
         Log.d("UserPreferences", "---- Current SharedPreferences ----");
 
         if (allPrefs.isEmpty()) {
@@ -65,7 +112,6 @@ public class SPManager {
                 Log.d("UserPreferences", entry.getKey() + " = " + entry.getValue());
             }
         }
-
         Log.d("UserPreferences", "----------------------------------");
     }
 }

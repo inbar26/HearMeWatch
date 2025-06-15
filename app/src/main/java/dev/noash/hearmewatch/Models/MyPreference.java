@@ -9,7 +9,6 @@ public class MyPreference {
     public MyPreference(String name, Boolean isActive) {
         this.name = name;
         this.isActive = isActive;
-
     }
 
     public String getName() {
@@ -18,6 +17,7 @@ public class MyPreference {
     public void setName(String name) {
         this.name = name;
     }
+
     public Boolean getActive() {
         return isActive;
     }

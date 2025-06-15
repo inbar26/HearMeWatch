@@ -145,7 +145,7 @@ public class MyForegroundService extends Service {
                             // Iterates through the user's active preferences and checks if the detected result from YAMNet
                             //// matches any of the selected (active) categories. If a match is found, it sends a notification
                             //// to the smartwatch with the detected sound label.
-                            User user = DBManager.getUser();
+                            User user = DBManager.getInstance().getUser();
                             Log.d("PREFERENCE_CHECK", "🔍 Checking user preferences...");
 
                             if (user != null) {

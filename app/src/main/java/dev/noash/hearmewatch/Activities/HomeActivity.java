@@ -3,32 +3,31 @@ package dev.noash.hearmewatch.Activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
+
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 
-
-import dev.noash.hearmewatch.Foreground.MyForegroundService;
-import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.R;
+import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.Utilities.DBManager;
-//import dev.noash.hearmewatch.Utilities.MessageSender;
 import dev.noash.hearmewatch.Utilities.SPManager;
+import dev.noash.hearmewatch.Foreground.MyForegroundService;
+
 
 public class HomeActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -37,44 +36,50 @@ public class HomeActivity extends AppCompatActivity {
     private TextView helloMessage;
     private MaterialButton startRecordingBtn;
     private MaterialButton stopRecordingBtn;
-    private MaterialButton connectWatchBtn;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private boolean isRunning;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         findViews();
-        initViews();
-        SPManager.init(getApplicationContext());
-        SPManager.getInstance().logAllPreferences();
-
-//        Wearable.getNodeClient(getApplicationContext()).getConnectedNodes()
-//                .addOnSuccessListener(nodes -> {
-//                    for (Node node : nodes) {
-//                        Log.d("WATCH111", "Connected node: " + node.getDisplayName());
-//                    }
-//                });
+        initViews();;
     }
+
+    private void findViews() {
+        drawerLayout = findViewById(R.id.home_drawer_layout);
+        navigationView = findViewById(R.id.home_navigation_view);
+        toolbar = findViewById(R.id.home_toolbar);
+        helloMessage = findViewById(R.id.TV_hello_message);
+        startRecordingBtn = findViewById(R.id.BTN_start_recording);
+        stopRecordingBtn = findViewById(R.id.BTN_stop_recording);
+    }
+
     private void initViews() {
         MyApp.setStatusBar(getWindow(), this);
         setSupportActionBar(toolbar);
-        menuManagement();
         setHelloMessage();
+        menuManagement();
+
+        if(SPManager.getInstance().isServiceRunning())
+            setButtonMode(startRecordingBtn, ContextCompat.getColor(this, R.color.buttons_disabled), false);
+
         startRecordingBtn.setOnClickListener(v -> startMyService());
         stopRecordingBtn.setOnClickListener(v -> stopMyService());
-        connectWatchBtn.setOnClickListener(v -> connectWatch());
-
     }
 
     private void setHelloMessage() {
-        String firstName;
-        firstName = DBManager.getUser().getName();
-        if(firstName == null)
-            helloMessage.setText("Hello");
+        String fName = DBManager.getInstance().getUser().getfName();
+        if(fName == null || fName.isEmpty())
+            helloMessage.setText("Hello !");
         else {
-            helloMessage.setText("Hello, " + firstName.split(" ")[0] + "!");
+            helloMessage.setText("Hello, " + fName + "!");
         }
+    }
 
+    private void setButtonMode(MaterialButton button, int color, boolean isEnabled) {
+        button.setBackgroundColor(color);
+        button.setClickable(isEnabled);
     }
 
     private void menuManagement() {
@@ -87,11 +92,17 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
+
                 if (id == R.id.nav_preferences) {
                     moveToPreferencesPage();
                 }
+
                 if (id == R.id.nav_profile) {
                     moveToProfilePage();
+                }
+
+                if (id == R.id.nav_guide) {
+                    moveToGuidePage();
                 }
 
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -105,42 +116,58 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
-    private void findViews() {
-        drawerLayout = findViewById(R.id.home_drawer_layout);
-        navigationView = findViewById(R.id.home_navigation_view);
-        toolbar = findViewById(R.id.home_toolbar);
-        helloMessage = findViewById(R.id.TV_hello_message);
-        startRecordingBtn = findViewById(R.id.BTN_start_recording);
-        stopRecordingBtn = findViewById(R.id.BTN_stop_recording);
-        connectWatchBtn = findViewById(R.id.BTN_connect_watch);
-    }
     private void moveToPreferencesPage() {
         Intent i = new Intent(this, PreferencesActivity.class);
         startActivity(i);
         finish();
     }
-
-    private void connectWatch() {
-
+    private void moveToGuidePage() {
+        Intent i = new Intent(this, GuideActivity.class);
+        startActivity(i);
+        finish();
     }
-
 
     private void startMyService() {
         if (!checkMicrophonePermission()) {
             requestMicrophonePermission();
         } else {
-            startRecordingBtn.setBackgroundColor(Color.parseColor("#77BABA"));
-            startRecordingBtn.setClickable(false);
             startMyForegroundService();
         }
     }
+    private boolean checkMicrophonePermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestMicrophonePermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                REQUEST_RECORD_AUDIO_PERMISSION);
+    }
+
+    private void startMyForegroundService() {
+        Intent serviceIntent = new Intent(this, MyForegroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //checking version
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+
+        SPManager.getInstance().setIsServiceRunning(true);
+        setButtonMode(startRecordingBtn, ContextCompat.getColor(this, R.color.buttons_disabled), false);
+    }
 
     private void stopMyService() {
-        startRecordingBtn.setBackgroundColor(Color.parseColor("#1F4F4F"));
-        startRecordingBtn.setClickable(true);
         Intent serviceIntent = new Intent(this, MyForegroundService.class);
         stopService(serviceIntent);
+
+        if(!SPManager.getInstance().isServiceRunning()) {
+            Toast.makeText(this, "No recording in progress.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            SPManager.getInstance().setIsServiceRunning(false);
+            setButtonMode(startRecordingBtn, ContextCompat.getColor(this, R.color.buttons),true);
+            Toast.makeText(this, "Recording stopped.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -154,25 +181,4 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
     }
-
-    private void startMyForegroundService() {
-        Intent serviceIntent = new Intent(this, MyForegroundService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //checking version
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
-    }
-
-    private boolean checkMicrophonePermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestMicrophonePermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.RECORD_AUDIO},
-                REQUEST_RECORD_AUDIO_PERMISSION);
-    }
-
 }

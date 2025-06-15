@@ -8,15 +8,15 @@
         android:layoutDirection="ltr"/>
 
     <item
-        android:id="@+id/nav_privacy"
-        android:title="@string/privacy"
-        android:icon="@drawable/ic_privacy"
-        android:layoutDirection="ltr"/>
-
-    <item
         android:id="@+id/nav_preferences"
         android:title="@string/preferences"
         android:icon="@drawable/ic_preferences"
+        android:layoutDirection="ltr"/>
+
+    <item
+        android:id="@+id/nav_guide"
+        android:title="@string/guide"
+        android:icon="@drawable/ic_guide"
         android:layoutDirection="ltr"/>
 
     <item

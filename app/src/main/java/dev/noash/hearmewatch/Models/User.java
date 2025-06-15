@@ -1,19 +1,19 @@
 package dev.noash.hearmewatch.Models;
 
-import dev.noash.hearmewatch.Models.PreferenceList;
-;
 import java.util.ArrayList;
 
 public class User {
     private String id;
-    private String Name;
+    private String fName;
+    private String lName;
     private String email;
     private PreferenceList myPreferences = new PreferenceList();
     public User() {}
 
     public User(User user) {
         this.id = user.getId();
-        this.Name = user.getName();
+        this.fName = user.getfName();
+        this.lName = user.getlName();
         this.email = user.getEmail();
         this.myPreferences = user.getMyPreferences();
     }
@@ -21,24 +21,27 @@ public class User {
     public String getId() {
         return id;
     }
-
-    public User setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
-    public String getName() {
-        return Name;
+    public String getfName() {
+        return fName;
+    }
+    public void setfName(String fName) {
+        this.fName = fName;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public String getlName() {
+        return lName;
+    }
+    public void setlName(String lName) {
+        this.lName = lName;
     }
 
     public PreferenceList getMyPreferences() {
         return myPreferences;
     }
-
     public void setMyPreferences(PreferenceList myPreferences) {
         this.myPreferences = myPreferences;
     }
@@ -46,9 +49,13 @@ public class User {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setName(String fName, String lName) {
+        this.fName = fName;
+        this.lName = lName;
     }
 
     public void initMyPreferences() {
