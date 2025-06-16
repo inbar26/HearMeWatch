@@ -50,6 +50,41 @@
         android:background="#edf6f9"
         android:padding="16dp"
         android:layoutDirection="ltr">
+        <!-- Title + Intro Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_profile"
+                android:background="@drawable/circle_purple"
+                android:padding="16dp"
+                android:contentDescription="Guide Icon"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Profile"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1C1C1E"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage your account information"
+                android:textSize="16sp"
+                android:textColor="#4A4A4A"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

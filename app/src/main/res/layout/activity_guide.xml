@@ -1,17 +1,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#f1f1f1"
+    android:background="#edf6f9"
     android:layoutDirection="ltr">
 
+    <!-- Toolbar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#FFFFFF"
-        android:layoutDirection="ltr">
+        android:background="#FFFFFF">
 
         <ImageButton
             android:id="@+id/guide_BTN_back"
@@ -20,10 +20,7 @@
             android:layout_height="60dp"
             app:iconTint="@null"
             android:backgroundTint="#f5f5f5"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
             android:src="@drawable/ic_back"
-            app:iconGravity="textEnd"
             app:iconSize="45dp" />
 
         <TextView
@@ -38,4 +35,192 @@
             android:fontFamily="sans-serif-light"/>
     </LinearLayout>
 
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <!-- Title + Intro Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:src="@drawable/ic_guide"
+                    android:background="@drawable/circle_purple"
+                    android:padding="16dp"
+                    android:contentDescription="Guide Icon"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Guide"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#1C1C1E"
+                    android:layout_marginTop="12dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Learn how to use HearMe Watch effectively"
+                    android:textSize="16sp"
+                    android:textColor="#4A4A4A"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- Section: Activating Sound Detection -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:padding="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Activating Sound Detection"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:paddingBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. Go to Dashboard\n2. Tap 'Start recording'\n3. Allow microphone access"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- Section: Choosing Sound Categories -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:padding="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Choosing Sound Categories"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:paddingBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. Open Preferences\n2. Select sound categories\n3. Save your preferences\n\nAvailable categories: Dog, Fire Alarm, Police Car, Baby Cry, Door Bell, Name calling."
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- Section: Smartwatch Alerts -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:padding="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Smartwatch Alerts"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:paddingBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="You'll receive an alert on your smartwatch with:\n• Vibration notification\n• Visual alert with sound type\n"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- Section: Privacy -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#DFF5E3"
+                android:padding="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Privacy &amp; Security"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:paddingBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Your privacy is protected:\n Audio is processed in real time and is never stored. All sound recognition happens locally on your device."
+                        android:textSize="16sp"
+                        android:textColor="#145A32" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

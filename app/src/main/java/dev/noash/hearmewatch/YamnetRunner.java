@@ -16,7 +16,9 @@ import java.util.List;
 
 public class YamnetRunner {
 
-    public static String runOnBuffer(Context context, ByteBuffer buffer) {
+    public static List<String> runOnBuffer(Context context, ByteBuffer buffer) {
+        List<String> topLabels = new ArrayList<>();
+
         try {
             // Convert PCM 16-bit buffer to normalized float array
             float[] audioData = new float[Math.min(buffer.capacity() / 2, 15600)];
@@ -25,7 +27,10 @@ public class YamnetRunner {
                 audioData[i] = buffer.getShort() / 32768f;
             }
 
-            if (audioData.length < 15600) return "Audio too short";
+            if (audioData.length < 15600) {
+                Log.w("YAMNet", "Audio too short");
+                return topLabels;
+            }
 
             Interpreter yamnet = ModelHelper.getYamnetModel();
 
@@ -36,25 +41,33 @@ public class YamnetRunner {
             yamnet.run(input, output);
 
             List<String> labels = loadLabels(context);
-            int bestIndex = 0;
+
+            // Step 1: find max score
             float bestScore = 0f;
             for (int i = 0; i < 521; i++) {
                 if (output[0][i] > bestScore) {
                     bestScore = output[0][i];
-                    bestIndex = i;
                 }
             }
 
-            String label = labels.get(bestIndex);
-            String result = label + " (" + (int)(bestScore * 100) + "%)";
-            Log.d("YAMNet", "Detected: " + result);
-            return result;
+            // Step 2: collect all labels with max score
+            for (int i = 0; i < 521; i++) {
+                if (Math.abs(output[0][i] - bestScore) < 1e-6) { // float precision
+                    topLabels.add(labels.get(i));
+                }
+            }
+
+            Log.d("YAMNet", "Top categories: " + topLabels + " (" + (int)(bestScore * 100) + "%)");
+
+            return topLabels;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "YAMNet Error";
+            Log.e("YAMNet", "Error during inference: " + e.getMessage());
+            return topLabels;
         }
     }
+
 
     private static List<String> loadLabels(Context context) throws IOException {
         List<String> labels = new ArrayList<>();

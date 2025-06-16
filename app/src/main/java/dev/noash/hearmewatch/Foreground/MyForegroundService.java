@@ -29,12 +29,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
+import java.util.List;
 
 import dev.noash.hearmewatch.EdgeImpulseProcessor;
 import dev.noash.hearmewatch.ModelHelper;
 import dev.noash.hearmewatch.Models.MyPreference;
 import dev.noash.hearmewatch.Models.User;
 import dev.noash.hearmewatch.Utilities.DBManager;
+import dev.noash.hearmewatch.Utilities.SPManager;
 import dev.noash.hearmewatch.YamnetRunner;
 
 public class MyForegroundService extends Service {
@@ -131,48 +133,30 @@ public class MyForegroundService extends Service {
                             String resultEI = EdgeImpulseProcessor.runAudioInference(inputEI);
 
                             fullBuffer.rewind();
-                            String resultYAM = YamnetRunner.runOnBuffer(this, fullBuffer);
+                            List<String> resultYAMLabels = YamnetRunner.runOnBuffer(this, fullBuffer);
+
 
                             Log.d("EdgeImpulse", "Result: " + resultEI);
-                            Log.d("YAMNet", "Detected: " + resultYAM);
+                            Log.d("YAMNet", "Detected labels: " + resultYAMLabels);
 
                             //this function works for only one category that called - speech
 //                            if (resultYAM.toLowerCase().contains("dog")) {
 //                                sendMessageToWatch(this, resultYAM);
 //                            }
-
-                            //new adding
-                            // Iterates through the user's active preferences and checks if the detected result from YAMNet
-                            //// matches any of the selected (active) categories. If a match is found, it sends a notification
-                            //// to the smartwatch with the detected sound label.
-                            User user = DBManager.getInstance().getUser();
-                            Log.d("PREFERENCE_CHECK", "🔍 Checking user preferences...");
-
-                            if (user != null) {
-                                Log.d("PREFERENCE_CHECK", "✅ User is not null");
-                                if (user.getMyPreferences() != null) {
-                                    Log.d("PREFERENCE_CHECK", "✅ Preferences list is not null");
-                                    HashMap<String, MyPreference> prefs = user.getMyPreferences().getList();
-                                    for (String key : prefs.keySet()) {
-                                        MyPreference pref = prefs.get(key);
-                                        Log.d("PREFERENCE_CHECK", "➡️ Checking preference: " + pref.getName() + " | Active: " + pref.getActive());
-
-                                        if (pref.getActive() && resultYAM.toLowerCase().contains(pref.getName().toLowerCase())) {
-                                            Log.d("PREFERENCE_MATCH", "🎯 Match found: " + pref.getName() + " in resultYAM: " + resultYAM);
-                                            sendMessageToWatch(this, resultYAM);
-                                        }
-                                    }
+                            SPManager spManager = SPManager.getInstance();
+                            for (String label : resultYAMLabels) {
+                                if (spManager.isNotificationEnabled(label)) {
+                                    Log.d("PREFERENCE_MATCH", "🎯 Match found in SharedPreferences: " + label);
+                                    sendMessageToWatch(this, label);
                                 } else {
-                                    Log.w("PREFERENCE_CHECK", "⚠️ Preferences list is null");
+                                    Log.d("PREFERENCE_CHECK", "⛔ " + label + " is not enabled in preferences");
                                 }
-                            } else {
-                                Log.w("PREFERENCE_CHECK", "❌ User is null");
                             }
-
                             //
 
                             new Handler(Looper.getMainLooper()).post(() ->
-                                    Toast.makeText(this, "EI: " + resultEI + "\nYAM: " + resultYAM, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "EI: " + resultEI + "\nYAM: " + resultYAMLabels, Toast.LENGTH_SHORT).show()
+
                             );
                         } catch (Exception e) {
                             Log.e("SERVICE", "Error during inference: " + e.getMessage());
