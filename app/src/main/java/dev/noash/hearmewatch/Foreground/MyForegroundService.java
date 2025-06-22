@@ -130,24 +130,38 @@ public class MyForegroundService extends Service {
                             for (int i = 0; i < inputEI.length; i++) {
                                 inputEI[i] = fullBuffer.getShort() / 32768f;
                             }
-                            String resultEI = EdgeImpulseProcessor.runAudioInference(inputEI);
 
-                            fullBuffer.rewind();
+                            // Run inference using Edge Impulse and YAMNet models
+                            String resultEI = EdgeImpulseProcessor.runAudioInference(inputEI);
+                            fullBuffer.rewind(); // Reset buffer before YAMNet inference
                             List<String> resultYAMLabels = YamnetRunner.runOnBuffer(this, fullBuffer);
 
-
+                            // Log raw model results
                             Log.d("EdgeImpulse", "Result: " + resultEI);
                             Log.d("YAMNet", "Detected labels: " + resultYAMLabels);
 
-                            //this function works for only one category that called - speech
-//                            if (resultYAM.toLowerCase().contains("dog")) {
-//                                sendMessageToWatch(this, resultYAM);
-//                            }
+                            // Access user preferences
                             SPManager spManager = SPManager.getInstance();
+                            String userName = spManager.getName();
+
+                            // Extract the top label from Edge Impulse output
+                            String topEI_Label = extractTopLabel(resultEI);
+                            Log.d("EdgeImpulse", "Top label: " + topEI_Label);
+
+                            // ✅ Check if top label matches the user's name
+                            if (topEI_Label != null &&
+                                    !userName.equals("Not Found") &&
+                                    topEI_Label.toLowerCase().contains(userName.toLowerCase())) {
+
+                                Log.d("EI_MATCH", "🎯 User name detected by EI: " + userName);
+                                sendMessageToWatch(this, "Your name " + userName + " was called"); // Send alert to smartwatch
+                            }
+
+                            // Check YAMNet results against enabled user preferences
                             for (String label : resultYAMLabels) {
                                 if (spManager.isNotificationEnabled(label)) {
                                     Log.d("PREFERENCE_MATCH", "🎯 Match found in SharedPreferences: " + label);
-                                    sendMessageToWatch(this, label);
+                                    sendMessageToWatch(this, label); // Send notification to smartwatch
                                 } else {
                                     Log.d("PREFERENCE_CHECK", "⛔ " + label + " is not enabled in preferences");
                                 }
@@ -214,6 +228,37 @@ public class MyForegroundService extends Service {
             }
         }
     }
+
+    // Extract the top label (highest percentage) from the Edge Impulse result string
+    private String extractTopLabel(String resultText) {
+        String[] lines = resultText.split("\n");
+        String bestLabel = null;
+        float maxConfidence = -1f;
+
+        for (String line : lines) {
+            // Skip invalid or non-label lines
+            if (line.trim().isEmpty() || !line.contains(":") || line.toLowerCase().startsWith("result")) {
+                continue;
+            }
+
+            try {
+                String[] parts = line.split(":");
+                String label = parts[0].trim();
+                String percentStr = parts[1].replace("%", "").trim();
+                float confidence = Float.parseFloat(percentStr);
+
+                if (confidence > maxConfidence) {
+                    maxConfidence = confidence;
+                    bestLabel = label;
+                }
+            } catch (Exception e) {
+                Log.e("PARSE_ERROR", "Error parsing line: " + line);
+            }
+        }
+
+        return bestLabel;
+    }
+
 
     @Override
     public void onDestroy() {
