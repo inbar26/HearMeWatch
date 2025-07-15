@@ -1,18 +1,18 @@
 package dev.noash.hearmewatch;
 
-import android.content.Context;
 import android.util.Log;
+import android.content.Context;
 
 import org.tensorflow.lite.Interpreter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
+import java.nio.ByteBuffer;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import java.util.ArrayList;
 
 public class YamnetRunner {
 
@@ -57,8 +57,6 @@ public class YamnetRunner {
                 }
             }
 
-            Log.d("YAMNet", "Top categories: " + topLabels + " (" + (int)(bestScore * 100) + "%)");
-
             return topLabels;
 
         } catch (Exception e) {
@@ -67,7 +65,6 @@ public class YamnetRunner {
             return topLabels;
         }
     }
-
 
     private static List<String> loadLabels(Context context) throws IOException {
         List<String> labels = new ArrayList<>();

@@ -1,22 +1,22 @@
 package dev.noash.hearmewatch;
 
-import android.app.Activity;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
+import android.util.Log;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.app.Activity;
+import android.content.Intent;
 import android.widget.TextView;
+import android.app.PendingIntent;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.google.android.gms.wearable.MessageClient;
-import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.MessageClient;
 
 public class MainActivity extends Activity implements MessageClient.OnMessageReceivedListener {
 
@@ -32,13 +32,6 @@ public class MainActivity extends Activity implements MessageClient.OnMessageRec
         Log.d("WATCH", "Listener registered in MainActivity");
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Wearable.getMessageClient(this).removeListener(this);
-    }
-
     @Override
     public void onMessageReceived(@NonNull MessageEvent event) {
         Log.d("WATCH_RECEIVE", "Message received with path: " + event.getPath());
@@ -48,13 +41,11 @@ public class MainActivity extends Activity implements MessageClient.OnMessageRec
 
             runOnUiThread(() -> {
                 TextView tv = findViewById(R.id.tvSoundDetected);
-                tv.setText("Detected: " + receivedMessage);
+                tv.setText(receivedMessage);
                 showNotification("Sound Detected", receivedMessage);
             });
         }
     }
-
-
 
     private void showNotification(String title, String text) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -87,5 +78,11 @@ public class MainActivity extends Activity implements MessageClient.OnMessageRec
                 notificationManager.createNotificationChannel(channel);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Wearable.getMessageClient(this).removeListener(this);
     }
 }

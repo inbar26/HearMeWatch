@@ -12,10 +12,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import dev.noash.hearmewatch.Models.User;
-import dev.noash.hearmewatch.Models.MyPreference;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+
+import dev.noash.hearmewatch.Objects.User;
+import dev.noash.hearmewatch.Objects.Preference;
+import dev.noash.hearmewatch.Objects.Vibration;
+import dev.noash.hearmewatch.Objects.VibrationList;
 
 public class DBManager {
     private static DBManager dbManager;
@@ -24,7 +32,12 @@ public class DBManager {
     public static final String USERS_REF = "users";
     public static final String MY_PREFERENCES_REF = "myPreferences";
     private static final DatabaseReference usersRef = database.getReference(USERS_REF);
+    public static final String VIBRATIONS_REF = "vibrations";
+    public static final String MY_VIBRATION_REF = "chosenVibration";
+    private static final DatabaseReference vibrationsRef = database.getReference(VIBRATIONS_REF);
     private static User currentUser = new User();
+    private static VibrationList vibrationsList;
+
 
     public interface CallBack<T> { void res(T res); }
 
@@ -55,6 +68,13 @@ public class DBManager {
     public static void setUser(User user) {
         currentUser = new User(user);
     }
+    public static VibrationList getVibrationsList() {
+        return vibrationsList;
+    }
+    public static void setVibrationsList(VibrationList vibrationsList) {
+        DBManager.vibrationsList = vibrationsList;
+    }
+
     public FirebaseUser fetchCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser(); //null -> user not logged
     }
@@ -106,7 +126,7 @@ public class DBManager {
 
                     SPManager.getInstance().savePreferencesFromList(getUser().getMyPreferences());
                     if(getUser().getfName() != null && !getUser().getfName().isEmpty())
-                        SPManager.getInstance().setName(getUser().getfName());
+                        SPManager.getInstance().setUserName(getUser().getfName());
 
                     callBack.res(true);
             }
@@ -130,7 +150,7 @@ public class DBManager {
         return Tasks.whenAll(updateFNameTask, updateLNameTask);
     }
 
-    public Task<Void> updateUserPreference(MyPreference preference) {
+    public Task<Void> updateUserPreference(Preference preference) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         return usersRef
@@ -139,6 +159,52 @@ public class DBManager {
                 .child("list")
                 .child(preference.getName())
                 .setValue(preference);
+    }
+
+    public void loadVibrationListFromDB(CallBack<Boolean> callBack) {
+        vibrationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Map<String, Vibration> vibrationMap = (Map<String, Vibration>) snapshot.getValue(new GenericTypeIndicator<Map<String, Vibration>>() {});
+                if (vibrationMap != null) {
+                    HashMap<String, Vibration> hashMap = new HashMap<>(vibrationMap);
+                    DBManager.getInstance().setVibrationsList(new VibrationList(new ArrayList<>(hashMap.values())));
+                }
+                callBack.res(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callBack.res(false);
+            }
+        });
+
+    }
+
+    public Task<Void> updateUserVibration(Vibration option) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        return usersRef
+                .child(user.getUid())
+                .child(MY_VIBRATION_REF)
+                .setValue(option.getName());
+    }
+
+    public static void saveVibrationsToDatabase(List<Vibration> vibrations) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("vibrations");
+
+        HashMap<String, Vibration> vibrationMap = new HashMap<>();
+        for (Vibration v : vibrations) {
+            vibrationMap.put(v.getName(), v);
+        }
+
+        ref.setValue(vibrationMap)
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("Vibrations saved successfully!");
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Failed to save vibrations: " + e.getMessage());
+                });
     }
 }
 

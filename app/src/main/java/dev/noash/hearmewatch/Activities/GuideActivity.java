@@ -1,14 +1,14 @@
 package dev.noash.hearmewatch.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.content.Intent;
 import android.widget.ImageButton;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.R;
+import dev.noash.hearmewatch.MyApp;
 
 public class GuideActivity extends AppCompatActivity {
 

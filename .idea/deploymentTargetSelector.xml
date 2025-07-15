@@ -4,34 +4,21 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-06-16T17:23:18.687140Z">
+        <DropdownSelection timestamp="2025-07-13T14:21:17.704029900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R58T702ZT4M" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=RFAT605C2EH" />
             </handle>
           </Target>
         </DropdownSelection>
-        <DialogSelection>
-          <targets>
-            <Target type="DEFAULT_BOOT">
-              <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=RZCT815Z5GY" />
-              </handle>
-            </Target>
-            <Target type="DEFAULT_BOOT">
-              <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=/Users/inbar/.android/avd/Medium_Phone.avd" />
-              </handle>
-            </Target>
-          </targets>
-        </DialogSelection>
+        <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="wearos">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-06-16T11:49:57.119655Z">
+        <DropdownSelection timestamp="2025-07-14T11:36:22.554275200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R58T702ZT4M" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=RZCT815Z5GY" />
             </handle>
           </Target>
         </DropdownSelection>

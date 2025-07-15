@@ -1,52 +1,49 @@
 package dev.noash.hearmewatch.Foreground;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
+import android.util.Log;
+import android.Manifest;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.util.Log;
-import android.widget.Toast;
-import android.Manifest;
+import android.app.Service;
+import android.content.Intent;
+import android.content.Context;
+import android.app.Notification;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.Wearable;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.HashMap;
 import java.util.List;
+import java.util.HashMap;
+import java.nio.ByteOrder;
+import java.nio.ByteBuffer;
+import java.io.IOException;
 
-import dev.noash.hearmewatch.EdgeImpulseProcessor;
 import dev.noash.hearmewatch.ModelHelper;
-import dev.noash.hearmewatch.Models.MyPreference;
-import dev.noash.hearmewatch.Models.User;
-import dev.noash.hearmewatch.Utilities.DBManager;
-import dev.noash.hearmewatch.Utilities.SPManager;
 import dev.noash.hearmewatch.YamnetRunner;
+import dev.noash.hearmewatch.Objects.SoundLabel;
+import dev.noash.hearmewatch.Utilities.SPManager;
+import dev.noash.hearmewatch.EdgeImpulseProcessor;
 
 public class MyForegroundService extends Service {
 
-    private static final String CHANNEL_ID = "ForegroundServiceChannel";
-    private Handler handler;
-    private Runnable runnable;
-
     private AudioRecord audioRecord;
+    private Handler handler;
     private boolean isRecording = false;
+    private static final String CHANNEL_ID = "ForegroundServiceChannel";
+    public static final String BASE_SOUND_MESSAGE = "A sound was detected nearby :\n";
+    public static final String PATH_SOUND_NOTIFICATION = "/sound_alert";
+    private static final long NOTIFICATION_EXPIRY_DURATION = 10_000L;
+    public static HashMap<String, Long> notificationTimestamps = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -113,6 +110,7 @@ public class MyForegroundService extends Service {
         new Thread(() -> {
             ByteBuffer fullBuffer = ByteBuffer.allocateDirect(targetBytes).order(ByteOrder.LITTLE_ENDIAN);
 
+
             while (isRecording) {
                 ByteBuffer tempBuffer = ByteBuffer.allocateDirect(2048).order(ByteOrder.LITTLE_ENDIAN);
                 int read = audioRecord.read(tempBuffer, 2048);
@@ -140,38 +138,67 @@ public class MyForegroundService extends Service {
                             Log.d("EdgeImpulse", "Result: " + resultEI);
                             Log.d("YAMNet", "Detected labels: " + resultYAMLabels);
 
-                            // Access user preferences
-                            SPManager spManager = SPManager.getInstance();
-                            String userName = spManager.getName();
+                            // Handle Name Calling option (Edge impulse)
+                            String topEI_Label = extractTopLabel(resultEI);// Extract the top label from Edge Impulse output
+                            String userName = SPManager.getInstance().getUserName();
+                            handleNameCallingNotification(this, topEI_Label, userName);
 
-                            // Extract the top label from Edge Impulse output
-                            String topEI_Label = extractTopLabel(resultEI);
-                            Log.d("EdgeImpulse", "Top label: " + topEI_Label);
-
-                            // ✅ Check if top label matches the user's name
-                            if (topEI_Label != null &&
-                                    !userName.equals("Not Found") &&
-                                    topEI_Label.toLowerCase().contains(userName.toLowerCase())) {
-
-                                Log.d("EI_MATCH", "🎯 User name detected by EI: " + userName);
-                                sendMessageToWatch(this, "Your name " + userName + " was called"); // Send alert to smartwatch
-                            }
-
-                            // Check YAMNet results against enabled user preferences
+                            // Handle sounds results (YAMNet)
                             for (String label : resultYAMLabels) {
-                                if (spManager.isNotificationEnabled(label)) {
-                                    Log.d("PREFERENCE_MATCH", "🎯 Match found in SharedPreferences: " + label);
-                                    sendMessageToWatch(this, label); // Send notification to smartwatch
-                                } else {
-                                    Log.d("PREFERENCE_CHECK", "⛔ " + label + " is not enabled in preferences");
+                                switch (label) {
+                                    case "Dog":
+                                    case "Bark":
+                                    case "Whimper (dog)":
+                                        handleSoundLabelNotification(this, SoundLabel.DOG_BARKING);
+                                        break;
+                                    case "Baby cry, infant cry":
+                                    case "Whimper":
+                                    case "Crying, sobbing":
+                                        handleSoundLabelNotification(this, SoundLabel.BABY_CRYING);
+                                        break;
+
+                                    case "Ambulance (siren)":
+                                        handleSoundLabelNotification(this, SoundLabel.AMBULANCE_SIREN);
+                                        break;
+
+                                    case "Police car (siren)":
+                                        handleSoundLabelNotification(this, SoundLabel.POLICE_SIREN);
+                                        break;
+
+                                    case "Car alarm":
+                                    case "Toot":
+                                    case "Vehicle horn, car horn, honking":
+                                        handleSoundLabelNotification(this, SoundLabel.CAR_HORN);
+                                        break;
+
+                                    case "Civil defense siren":
+                                        handleSoundLabelNotification(this, SoundLabel.CIVIL_DEFENSE);
+                                        break;
+
+                                    case "Knock":
+                                    case "Door":
+                                        handleSoundLabelNotification(this, SoundLabel.DOOR_KNOCK);
+                                        break;
+
+                                    case "Doorbell":
+                                    case "Ding-dong":
+                                    case "Bell":
+                                    case "Jingle bell":
+                                        handleSoundLabelNotification(this, SoundLabel.INTERCOM);
+                                       break;
+
+                                    case "Fire engine, fire truck (siren)":
+                                    case "Fire alarm":
+                                    case "Smoke detector, smoke alarm":
+                                        handleSoundLabelNotification(this, SoundLabel.FIRE_ALARM);
+                                        break;
+
+                                    default:
+                                        // do nothing
+                                        break;
                                 }
                             }
-                            //
 
-                            new Handler(Looper.getMainLooper()).post(() ->
-                                    Toast.makeText(this, "EI: " + resultEI + "\nYAM: " + resultYAMLabels, Toast.LENGTH_SHORT).show()
-
-                            );
                         } catch (Exception e) {
                             Log.e("SERVICE", "Error during inference: " + e.getMessage());
                         }
@@ -183,18 +210,63 @@ public class MyForegroundService extends Service {
         }).start();
     }
 
-    private void sendMessageToWatch(Context context, String message) {
-        Log.d("SEND_TO_WATCH", "📤 Preparing to send message: " + message);
+    private void handleSoundLabelNotification(Context context, SoundLabel soundLabel) {
+        String displayName = SoundLabel.getDisplayName(soundLabel);
 
+        long now = System.currentTimeMillis();
+        Long lastTime = notificationTimestamps.get(displayName);
+
+        boolean shouldNotify = ((lastTime == null || (now - lastTime > NOTIFICATION_EXPIRY_DURATION)) &&
+                SPManager.getInstance().isNotificationEnabled(displayName));
+
+        if (shouldNotify) {
+            notificationTimestamps.put(displayName, now);
+            Log.d("SOUND_MATCH", displayName);
+            sendMessageToWatch(context, BASE_SOUND_MESSAGE + displayName);
+        } else {
+            if (lastTime != null) {
+                Log.d("SOUND_SKIP", "Skipped " + displayName + " – " + (now - lastTime) + "ms since last notification");
+            } else {
+                Log.d("SOUND_SKIP", "Skipped " + displayName + " – not enabled in SharedPreferences");
+            }
+        }
+    }
+
+    private void handleNameCallingNotification(Context context, String topLabel, String userName) {
+        String displayName = SoundLabel.getDisplayName(SoundLabel.NAME_CALLING);
+
+        long now = System.currentTimeMillis();
+        Long lastTime = notificationTimestamps.get(displayName);
+
+        boolean shouldNotify = ((lastTime == null || (now - lastTime > NOTIFICATION_EXPIRY_DURATION)) &&
+                topLabel != null &&
+                userName != null &&
+                !userName.equals("Not Found") &&
+                topLabel.toLowerCase().contains(userName.toLowerCase()) &&
+                SPManager.getInstance().isNotificationEnabled(displayName));
+
+        if (shouldNotify) {
+            notificationTimestamps.put(displayName, now);
+            Log.d("NAME_MATCH", userName);
+            sendMessageToWatch(context, "Your name\n" + userName + "\nwas called");
+        } else {
+            if (lastTime != null) {
+                Log.d("NAME_SKIP", "Skipped NAME_CALLING – " + (now - lastTime) + "ms since last");
+            } else {
+                Log.d("NAME_SKIP", "NAME_CALLING not triggered – either disabled or not matched");
+            }
+        }
+    }
+
+    private void sendMessageToWatch(Context context, String message) {
         Wearable.getNodeClient(context).getConnectedNodes().addOnSuccessListener(nodes -> {
             if (nodes.isEmpty()) {
                 Log.e("SEND_TO_WATCH", "❌ No connected nodes — cannot send message!");
             } else {
                 for (com.google.android.gms.wearable.Node node : nodes) {
-                    Log.d("SEND_TO_WATCH", "✅ Connected to node: " + node.getDisplayName() + " (" + node.getId() + ")");
                     Wearable.getMessageClient(context).sendMessage(
                             node.getId(),
-                            "/sound_alert",
+                            PATH_SOUND_NOTIFICATION,
                             message.getBytes()
                     ).addOnSuccessListener(aVoid -> {
                         Log.d("SEND_TO_WATCH", "✅ Message sent to " + node.getDisplayName());
@@ -206,13 +278,6 @@ public class MyForegroundService extends Service {
         }).addOnFailureListener(e -> {
             Log.e("SEND_TO_WATCH", "❌ Failed to get connected nodes: " + e.getMessage());
         });
-    }
-
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 
     private void createNotificationChannel() {
@@ -229,10 +294,16 @@ public class MyForegroundService extends Service {
         }
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
     // Extract the top label (highest percentage) from the Edge Impulse result string
     private String extractTopLabel(String resultText) {
         String[] lines = resultText.split("\n");
-        String bestLabel = null;
+        String topLabel = null;
         float maxConfidence = -1f;
 
         for (String line : lines) {
@@ -249,14 +320,18 @@ public class MyForegroundService extends Service {
 
                 if (confidence > maxConfidence) {
                     maxConfidence = confidence;
-                    bestLabel = label;
+                    topLabel = label;
                 }
             } catch (Exception e) {
                 Log.e("PARSE_ERROR", "Error parsing line: " + line);
             }
         }
 
-        return bestLabel;
+        if(maxConfidence > 60f) { //Send only if there is a high recognition rate (above 60%)
+            Log.d("EdgeImpulse", "Top label: " + topLabel);
+            return topLabel;
+        }
+        return null;
     }
 
 

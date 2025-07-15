@@ -37,7 +37,6 @@ public class HomeActivity extends AppCompatActivity {
     private MaterialButton startRecordingBtn;
     private MaterialButton stopRecordingBtn;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-    private boolean isRunning;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +93,7 @@ public class HomeActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_preferences) {
-                    moveToPreferencesPage();
+                    loadDataAndMoveToPreferencesPage();
                 }
 
                 if (id == R.id.nav_profile) {
@@ -111,13 +110,27 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void moveToProfilePage() {
-        Intent i = new Intent(this, ProfileActivity.class);
-        startActivity(i);
-        finish();
+    private void loadDataAndMoveToPreferencesPage() {
+        if(DBManager.getVibrationsList() == null) {
+            DBManager.getInstance().loadVibrationListFromDB(new DBManager.CallBack<Boolean>() {
+                @Override
+                public void res(Boolean res) {
+                    if (res) { //data load successfully
+                        moveToPreferencesPage();
+                    }
+                }
+            });
+        } else {
+            moveToPreferencesPage();
+        }
     }
     private void moveToPreferencesPage() {
         Intent i = new Intent(this, PreferencesActivity.class);
+        startActivity(i);
+        finish();
+    }
+    private void moveToProfilePage() {
+        Intent i = new Intent(this, ProfileActivity.class);
         startActivity(i);
         finish();
     }

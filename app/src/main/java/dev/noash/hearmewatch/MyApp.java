@@ -1,12 +1,12 @@
 package dev.noash.hearmewatch;
 
-import android.app.Application;
-
-import android.content.Context;
-
 import android.os.Build;
 
 import android.view.Window;
+
+import android.app.Application;
+
+import android.content.Context;
 
 import androidx.core.content.ContextCompat;
 

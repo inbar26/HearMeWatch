@@ -74,7 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DBManager.getInstance().getUser().setName(fName, lName);
-                        SPManager.getInstance().setName(fName);
+                        SPManager.getInstance().setUserName(fName);
                         Toast.makeText(this, "User updated successfully.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();

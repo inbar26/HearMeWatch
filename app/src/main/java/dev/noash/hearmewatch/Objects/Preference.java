@@ -1,12 +1,12 @@
-package dev.noash.hearmewatch.Models;
+package dev.noash.hearmewatch.Objects;
 
-public class MyPreference {
+public class Preference {
     private String name;
     private Boolean isActive;
-    public MyPreference() {
+    public Preference() {
     }
 
-    public MyPreference(String name, Boolean isActive) {
+    public Preference(String name, Boolean isActive) {
         this.name = name;
         this.isActive = isActive;
     }

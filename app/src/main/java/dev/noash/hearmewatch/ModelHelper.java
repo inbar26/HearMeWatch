@@ -1,11 +1,11 @@
 package dev.noash.hearmewatch;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import org.tensorflow.lite.Interpreter;
+import android.content.res.AssetFileDescriptor;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -34,7 +34,6 @@ public class ModelHelper {
     public static Interpreter getEdgeModel() {
         return edgeModel;
     }
-
     public static Interpreter getYamnetModel() {
         return yamnetModel;
     }

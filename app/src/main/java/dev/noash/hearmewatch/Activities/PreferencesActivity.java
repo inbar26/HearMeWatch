@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import dev.noash.hearmewatch.Fragments.VibrationListFragment;
 
 import dev.noash.hearmewatch.R;
 import dev.noash.hearmewatch.MyApp;
@@ -51,6 +52,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private void setupFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.FL_preferences, new PreferenceListFragment());
+        transaction.replace(R.id.FL_vibrations, new VibrationListFragment());
         transaction.commit();
     }
 }

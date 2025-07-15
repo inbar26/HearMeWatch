@@ -82,23 +82,24 @@
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
+        <FrameLayout
+            android:id="@+id/FL_preferences"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:background="@drawable/frame_outline"
+            android:layoutDirection="ltr"
+            android:layout_marginBottom="16dp"/>
 
-
-    <FrameLayout
-        android:id="@+id/FL_preferences"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:padding="8dp"
-        android:background="@drawable/frame_outline"
-        android:layoutDirection="ltr"
-        android:layout_marginBottom="110dp"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layoutDirection="ltr"/>
+        <FrameLayout
+            android:id="@+id/FL_vibrations"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:background="@drawable/frame_outline"
+            android:layoutDirection="ltr"/>
 
     </LinearLayout>
 </LinearLayout>

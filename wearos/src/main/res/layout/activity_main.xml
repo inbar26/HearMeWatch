@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:gravity="center"
-    android:orientation="vertical"
     android:padding="12dp">
 
-    <ImageView
-        android:id="@+id/ivAlertIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="43dp"
-        android:contentDescription="Alert icon"
-        android:src="@drawable/ic_alert_bell"
-        android:tint="#FF6F00" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="top|center_horizontal">
 
+        <ImageView
+            android:id="@+id/ivAlertIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:contentDescription="Alert icon"
+            android:src="@drawable/ic_alert_bell"
+            android:tint="#FF6F00"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvSoundDetected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:text="Waiting for detection..."
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold" />
-
-</LinearLayout>
+        android:textStyle="bold"
+        android:lineSpacingExtra="6dp"
+        android:gravity="center" />
+</FrameLayout>

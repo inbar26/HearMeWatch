@@ -6,19 +6,20 @@ import android.content.SharedPreferences;
 
 import java.util.Map;
 
-import dev.noash.hearmewatch.Models.MyPreference;
-import dev.noash.hearmewatch.Models.PreferenceList;
+import dev.noash.hearmewatch.Objects.Preference;
+import dev.noash.hearmewatch.Objects.PreferenceList;
 
 public class SPManager {
     private static SPManager spManager;
     private static SharedPreferences sp;
     private static final String PREFS_FILE_NAME = "user_prefs";
     private static final String IS_SERVICE_RUNNING_KEY = "is_service_running";
-    private static final String NAME_KEY = "name";
+    private static final String PREFERRED_VIBRATION_KEY = "preferred_vibration";
+    private static final String USER_NAME_KEY = "user_name";
 
     public static void init(Context context) {
         if (spManager == null) {
-            synchronized (DBManager.class) {
+            synchronized (SPManager.class) {
                 if (spManager == null) {
                     spManager = new SPManager(context);
                 }
@@ -39,7 +40,7 @@ public class SPManager {
     public void savePreferencesFromList(PreferenceList preferenceList) {
         SharedPreferences.Editor editor = sp.edit();
 
-        for (Map.Entry<String, MyPreference> entry : preferenceList.getList().entrySet()) {
+        for (Map.Entry<String, Preference> entry : preferenceList.getList().entrySet()) {
             String name = entry.getKey();
             boolean isActive = entry.getValue().getActive();
             editor.putBoolean(name, isActive);
@@ -48,24 +49,6 @@ public class SPManager {
         editor.apply();
     }
 
-    public void setNotificationPreference(String type, boolean isEnabled) {
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(type, isEnabled);
-        editor.apply();
-    }
-    public boolean isServiceRunning() {
-        return getBoolean(IS_SERVICE_RUNNING_KEY, false);
-    }
-    public void setIsServiceRunning(boolean value) {
-        setBoolean(IS_SERVICE_RUNNING_KEY, value);
-    }
-
-    public String getName() {
-        return getString(NAME_KEY, "Not Found");
-    }
-    public void setName(String value) {
-        setString(NAME_KEY, value);
-    }
 
     public boolean getBoolean(String key, boolean defaultValue) {
         return sp.getBoolean(key, defaultValue);
@@ -76,23 +59,43 @@ public class SPManager {
         editor.apply();
     }
 
+    public String getString(String key, String defaultValue) {
+        return sp.getString(key, defaultValue);
+    }
     public void setString(String key, String value) {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(key, value);
         editor.apply();
     }
-    public String getString(String key, String defaultValue) {
-        return sp.getString(key, defaultValue);
+
+    public boolean isServiceRunning() {
+        return getBoolean(IS_SERVICE_RUNNING_KEY, false);
+    }
+
+    public void setIsServiceRunning(boolean value) {
+        setBoolean(IS_SERVICE_RUNNING_KEY, value);
+    }
+
+    public String getUserName() {
+        return getString(USER_NAME_KEY, "Not Found");
+    }
+    public void setUserName(String value) {
+        setString(USER_NAME_KEY, value);
     }
 
     public boolean isNotificationEnabled(String type) {
-        return sp.getBoolean(type, false); // default : false
+        return getBoolean(type, false); // default : false
+    }
+    public void setNotificationPreference(String type, boolean isEnabled) {
+        setBoolean(type, isEnabled);
     }
 
-    public void removePreference(String type) {
-        SharedPreferences.Editor editor = sp.edit();
-        editor.remove(type);
-        editor.apply();
+    public String getPreferredVibration() {
+        return getString(PREFERRED_VIBRATION_KEY, null);
+    }
+
+    public void setPreferredVibration(String value) {
+        setString(PREFERRED_VIBRATION_KEY, value);
     }
 
     public void clearAllPreferences() {

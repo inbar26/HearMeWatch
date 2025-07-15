@@ -19,22 +19,22 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 import dev.noash.hearmewatch.R;
-import dev.noash.hearmewatch.Models.MyPreference;
+import dev.noash.hearmewatch.Objects.Preference;
 import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.SPManager;
 
 public class PreferenceListFragment extends Fragment {
     private ListView LV_items;
-    private final ArrayList<MyPreference> preferences = new ArrayList<>();
-    private ArrayAdapter<MyPreference> adapter;
+    private final ArrayList<Preference> preferences = new ArrayList<>();
+    private ArrayAdapter<Preference> adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         LV_items = view.findViewById(R.id.LV_items);
-        HashMap<String, MyPreference> p = DBManager.getInstance().getUser().getMyPreferences().getList();
-        for (Map.Entry<String, MyPreference> entry : p.entrySet()) {
+        HashMap<String, Preference> temp = DBManager.getInstance().getUser().getMyPreferences().getList();
+        for (Map.Entry<String, Preference> entry : temp.entrySet()) {
             preferences.add(entry.getValue());
         }
         setupListView();
@@ -42,29 +42,32 @@ public class PreferenceListFragment extends Fragment {
     }
 
     private void setupListView() {
-        adapter = new ArrayAdapter<MyPreference>(requireContext(), R.layout.preference_layout, preferences) {
+        adapter = new ArrayAdapter<Preference>(requireContext(), R.layout.item_preference, preferences) {
             @NonNull
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 if (convertView == null) {
-                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.preference_layout, parent, false);
+                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_preference, parent, false);
                 }
 
-                MyPreference pref = getItem(position);
-
+                Preference pref = getItem(position);
                 TextView name = convertView.findViewById(R.id.TV_pName);
                 SwitchCompat toggle = convertView.findViewById(R.id.SC_active);
 
-                if (pref != null) {
+                if (pref != null) { //init
                     name.setText(pref.getName());
-                    toggle.setChecked(pref.getActive());
-                    toggle.setOnCheckedChangeListener((buttonView, isChecked) -> pref.setActive(isChecked));
-                }
 
-                toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    pref.setActive(isChecked);
-                    DBManager.getInstance().updateUserPreference(pref).addOnCompleteListener(task -> SPManager.getInstance().setNotificationPreference(pref.getName(), isChecked));
-                });
+                    toggle.setOnCheckedChangeListener(null);
+                    toggle.setChecked(pref.getActive());
+
+                    toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        pref.setActive(isChecked);
+                        DBManager.getInstance().updateUserPreference(pref)
+                                .addOnCompleteListener(task ->
+                                        SPManager.getInstance().setNotificationPreference(pref.getName(), isChecked)
+                                );
+                    });
+                }
 
                 return convertView;
             }
