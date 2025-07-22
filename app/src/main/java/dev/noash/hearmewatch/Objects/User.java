@@ -7,6 +7,8 @@ public class User {
     private String fName;
     private String lName;
     private String email;
+
+    private String profileImageUrl;
     private PreferenceList myPreferences = new PreferenceList();
     private String chosenVibration;
     public User() {}
@@ -16,6 +18,7 @@ public class User {
         this.fName = user.getfName();
         this.lName = user.getlName();
         this.email = user.getEmail();
+        this.profileImageUrl = user.getProfileImageUrl();
         this.myPreferences = user.getMyPreferences();
         this.chosenVibration = user.getChosenVibration();
     }
@@ -45,6 +48,14 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
     public PreferenceList getMyPreferences() {
         return myPreferences;

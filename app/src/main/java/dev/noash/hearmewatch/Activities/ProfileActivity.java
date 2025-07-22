@@ -2,6 +2,7 @@ package dev.noash.hearmewatch.Activities;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,13 +27,21 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText fName, lName, email;
     private MaterialButton submitBTN;
 
+    private TextView tvImageProfile ;
+
+    private MaterialButton tvImageButton;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_with_drawer);
-        LayoutInflater.from(this).inflate(R.layout.activity_profile, findViewById(R.id.content_container), true); // 2. טוען את התוכן הספציפי
+        LayoutInflater.from(this).inflate(R.layout.activity_profile, findViewById(R.id.content_container), true);
 
         findViews();
         initViews();
+    }
+
+    private void uploadPhoto() {
+        Toast.makeText(this, "Upload photo", Toast.LENGTH_SHORT).show();
     }
 
     private void findViews() {
@@ -40,6 +49,8 @@ public class ProfileActivity extends AppCompatActivity {
         lName = findViewById(R.id.ET_last_name);
         email = findViewById(R.id.ET_email);
         submitBTN = findViewById(R.id.BTN_save_changes);
+        tvImageProfile = findViewById(R.id.IV_profile_picture);
+        tvImageButton = findViewById(R.id.BTN_choose_image);
     }
 
     private void initViews() {
@@ -50,6 +61,15 @@ public class ProfileActivity extends AppCompatActivity {
         initFields();
 
         submitBTN.setOnClickListener(v -> updateUserDetails());
+
+        String firstN = DBManager.getInstance().getUser().getfName();
+
+        if (tvImageProfile != null && firstN != null && !firstN.isEmpty()) {
+            String firstLetter = firstN.substring(0, 1).toUpperCase();
+            tvImageProfile.setText(firstLetter);
+        }
+
+        tvImageButton.setOnClickListener(v -> uploadPhoto());
     }
 
     private void initDrawer() {

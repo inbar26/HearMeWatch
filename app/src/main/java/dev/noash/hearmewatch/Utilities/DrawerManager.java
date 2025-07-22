@@ -61,6 +61,7 @@ public class DrawerManager {
         TextView tvName = headerView.findViewById(R.id.TV_header_user_name);
         TextView tvEmail = headerView.findViewById(R.id.TV_header_user_email);
 
+
         if (tvName != null) {
             tvName.setText(name);
         }
