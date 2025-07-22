@@ -4,6 +4,7 @@ import android.view.View;
 import android.os.Bundle;
 
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
@@ -33,6 +34,16 @@ public class PreferenceListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         LV_items = view.findViewById(R.id.LV_items);
+
+        //Init list title + description
+        TextView tvTitle = view.findViewById(R.id.TV_title_list);
+        TextView tvSubtitle = view.findViewById(R.id.TV_subtitle);
+        ImageView ivIcon = view.findViewById(R.id.IV_title_icon_list);
+
+        tvTitle.setText("Sound Categories");
+        tvSubtitle.setText("Choose which sounds you want to receive alerts for");
+        ivIcon.setImageResource(R.drawable.ic_bell);
+
         HashMap<String, Preference> temp = DBManager.getInstance().getUser().getMyPreferences().getList();
         for (Map.Entry<String, Preference> entry : temp.entrySet()) {
             preferences.add(entry.getValue());
@@ -53,10 +64,11 @@ public class PreferenceListFragment extends Fragment {
                 Preference pref = getItem(position);
                 TextView name = convertView.findViewById(R.id.TV_pName);
                 SwitchCompat toggle = convertView.findViewById(R.id.SC_active);
+                ImageView icon = convertView.findViewById(R.id.IV_pIcon);
 
                 if (pref != null) { //init
                     name.setText(pref.getName());
-
+                    setIcon(pref.getName(), icon);
                     toggle.setOnCheckedChangeListener(null);
                     toggle.setChecked(pref.getActive());
 
@@ -71,6 +83,47 @@ public class PreferenceListFragment extends Fragment {
 
                 return convertView;
             }
+
+            private void setIcon(String name, ImageView icon) {
+                int resId = 0;
+                switch (name) {
+                    case "Dog Barking":
+                        resId = R.drawable.ic_dog;
+                        break;
+                    case "Baby Crying":
+                        resId = R.drawable.ic_baby_crying;
+                        break;
+                    case "Ambulance Siren":
+                        resId = R.drawable.ic_ambulance;
+                        break;
+                    case "Police Siren":
+                        resId = R.drawable.ic_police;
+                        break;
+                    case "Car Horn":
+                        resId = R.drawable.ic_car_horn;
+                        break;
+                    case "Civil Defense":
+                        resId = R.drawable.ic_civil_defense;
+                        break;
+                    case "Door Knock":
+                        resId = R.drawable.ic_door_knock;
+                        break;
+                    case "Intercom":
+                        resId = R.drawable.ic_intercom;
+                        break;
+                    case "Fire Alarm":
+                        resId = R.drawable.ic_fire_alarm;
+                        break;
+                    case "Name Calling":
+                        resId = R.drawable.ic_name_calling;
+                        break;
+                    default:
+
+                        break;
+                }
+                icon.setImageResource(resId);
+            }
+
         };
 
         LV_items.setAdapter(adapter);

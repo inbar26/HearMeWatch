@@ -5,19 +5,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.os.Build;
+import android.view.View;
 import android.os.Bundle;
 import android.widget.Toast;
-import android.view.MenuItem;
 import android.widget.TextView;
+import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.GravityCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
@@ -26,118 +25,78 @@ import dev.noash.hearmewatch.R;
 import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.SPManager;
+import dev.noash.hearmewatch.Utilities.DrawerManager;
 import dev.noash.hearmewatch.Foreground.MyForegroundService;
 
 
 public class HomeActivity extends AppCompatActivity {
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private Toolbar toolbar;
-    private TextView helloMessage;
+
     private MaterialButton startRecordingBtn;
     private MaterialButton stopRecordingBtn;
+    private TextView title;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_with_drawer);
+        LayoutInflater.from(this).inflate(R.layout.activity_home, findViewById(R.id.content_container), true); // 2. טוען את התוכן הספציפי
+
         findViews();
         initViews();;
     }
 
     private void findViews() {
-        drawerLayout = findViewById(R.id.home_drawer_layout);
-        navigationView = findViewById(R.id.home_navigation_view);
-        toolbar = findViewById(R.id.home_toolbar);
-        helloMessage = findViewById(R.id.TV_hello_message);
-        startRecordingBtn = findViewById(R.id.BTN_start_recording);
-        stopRecordingBtn = findViewById(R.id.BTN_stop_recording);
+        title = findViewById(R.id.TV_page_title);
+        startRecordingBtn = findViewById(R.id.BTN_start_detection);
+     //   stopRecordingBtn = findViewById(R.id.BTN_stop_recording);
     }
 
     private void initViews() {
         MyApp.setStatusBar(getWindow(), this);
-        setSupportActionBar(toolbar);
-        setHelloMessage();
-        menuManagement();
+        initDrawer();
+        initHeader();
 
-        if(SPManager.getInstance().isServiceRunning())
-            setButtonMode(startRecordingBtn, ContextCompat.getColor(this, R.color.buttons_disabled), false);
+        if(SPManager.getInstance().isServiceRunning()) {
+            //   setButtonMode(startRecordingBtn, ContextCompat.getColor(this, R.color.buttons_disabled), false);
+        }
 
         startRecordingBtn.setOnClickListener(v -> startMyService());
-        stopRecordingBtn.setOnClickListener(v -> stopMyService());
+   //     stopRecordingBtn.setOnClickListener(v -> stopMyService());
     }
+
+    private void initDrawer() {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        NavigationView navView = findViewById(R.id.navigation_view);
+        DrawerManager.setupDrawer(this, drawerLayout, toolbar, navView);
+
+        View headerView = navView.getHeaderView(0);
+        String userName = DBManager.getInstance().getUser().getName();
+        String userEmail = DBManager.getInstance().getUser().getEmail();
+        DrawerManager.updateUserCard(headerView, userName, userEmail);
+    }
+
+    private void initHeader() {
+        title = findViewById(R.id.TV_page_title);
+        setHelloMessage();
+
+        TextView subtitle = findViewById(R.id.TV_page_subtitle);
+        subtitle.setText("Ready to detect sounds?");
+    }
+
 
     private void setHelloMessage() {
         String fName = DBManager.getInstance().getUser().getfName();
         if(fName == null || fName.isEmpty())
-            helloMessage.setText("Hello !");
+            title.setText("Hello !");
         else {
-            helloMessage.setText("Hello, " + fName + "!");
+            title.setText("Hello, " + fName + "!");
         }
     }
 
     private void setButtonMode(MaterialButton button, int color, boolean isEnabled) {
         button.setBackgroundColor(color);
         button.setClickable(isEnabled);
-    }
-
-    private void menuManagement() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-
-                if (id == R.id.nav_preferences) {
-                    loadDataAndMoveToPreferencesPage();
-                }
-
-                if (id == R.id.nav_profile) {
-                    moveToProfilePage();
-                }
-
-                if (id == R.id.nav_guide) {
-                    moveToGuidePage();
-                }
-
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        });
-    }
-
-    private void loadDataAndMoveToPreferencesPage() {
-        if(DBManager.getVibrationsList() == null) {
-            DBManager.getInstance().loadVibrationListFromDB(new DBManager.CallBack<Boolean>() {
-                @Override
-                public void res(Boolean res) {
-                    if (res) { //data load successfully
-                        moveToPreferencesPage();
-                    }
-                }
-            });
-        } else {
-            moveToPreferencesPage();
-        }
-    }
-    private void moveToPreferencesPage() {
-        Intent i = new Intent(this, PreferencesActivity.class);
-        startActivity(i);
-        finish();
-    }
-    private void moveToProfilePage() {
-        Intent i = new Intent(this, ProfileActivity.class);
-        startActivity(i);
-        finish();
-    }
-    private void moveToGuidePage() {
-        Intent i = new Intent(this, GuideActivity.class);
-        startActivity(i);
-        finish();
     }
 
     private void startMyService() {
@@ -166,7 +125,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         SPManager.getInstance().setIsServiceRunning(true);
-        setButtonMode(startRecordingBtn, ContextCompat.getColor(this, R.color.buttons_disabled), false);
+       // setButtonMode(startRecordingBtn, ContextCompat.getColor(this, R.color.buttons_disabled), false);
     }
 
     private void stopMyService() {

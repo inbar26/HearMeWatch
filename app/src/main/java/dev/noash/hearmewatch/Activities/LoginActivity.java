@@ -18,8 +18,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import dev.noash.hearmewatch.Objects.Vibration;
 import dev.noash.hearmewatch.R;
 import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.Utilities.DBManager;
@@ -43,6 +46,14 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             handleUserEntry(user); //user exists
         }
+
+        List<Vibration> vibrations = Arrays.asList(
+                new Vibration("Quick Tap", Arrays.asList(0L, 150L)),
+                new Vibration("Double Pulse", Arrays.asList(0L, 150L, 100L, 150L)),
+                new Vibration("Steady Alarm", Arrays.asList(0L, 300L, 200L, 300L)),
+                new Vibration("Bold Buzz", Arrays.asList(0L, 600L))
+        );
+        DBManager.getInstance().saveVibrationsToDatabase(vibrations);
     }
 
     private void showLoginScreen() {
@@ -107,9 +118,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void res(Boolean res) {
                 if(res) { //data load successfully
-                    moveToHomePage();
+                        DBManager.getInstance().loadVibrationListFromDB(new DBManager.CallBack<Boolean>() {
+                            @Override
+                            public void res(Boolean res) {
+                                if (res) { //data load successfully
+                                    moveToHomePage();
+                                }
+                            }
+                        });
+                    }
                 }
-            }
         });
     }
 

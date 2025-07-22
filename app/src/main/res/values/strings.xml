@@ -5,7 +5,25 @@
     <string name="profile" translatable="false">Profile</string>
     <string name="preferences" translatable="false">Preferences</string>
     <string name="guide" translatable="false">Guide</string>
-    <string name="log_out" translatable="false">Log Out</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="menu">Menu</string>
+    <string name="hearmewatch">HearMeWatch</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="accessibility">Accessibility</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="first_name">First Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="last_name">Last Name</string>
+    <string name="email_cannot_be_changed">Email cannot be changed</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="activating_sound_detection">Activating Sound Detection</string>
+    <string name="choosing_sound_categories">Choosing Sound Categories</string>
+    <string name="available_categories_html"><![CDATA[<b>Available categories :</b><br> Name Calling, Civil Defense, Ambulance Siren, Fire Alarm, Police Siren, Car Horn, Intercom, Door Knock, Baby Crying, Dog Barking.]]></string>
+    <string name="smartwatch_alerts">Smartwatch Alerts</string>
+    <string name="when_a_sound_is_detected_that_matches_your_selected_categories_you_ll_receive_an_instant_alert_on_your_smartwatch_with">When a sound is detected that matches your selected categories, you\'ll receive an instant alert on your smartwatch with :</string>
+    <string name="privacy_amp_security"><![CDATA[Privacy & Security]]></string>
+    <string name="privacy_notice"><![CDATA[<b>Your privacy is protected :</b><br>Audio is processed in real time and is never stored. All sound recognition happens locally on your device.]]></string>
+
 
 
 </resources>

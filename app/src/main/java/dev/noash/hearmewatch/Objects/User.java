@@ -63,6 +63,22 @@ public class User {
         this.fName = fName;
         this.lName = lName;
     }
+    public String getName() {
+        StringBuilder fullName = new StringBuilder();
+
+        if (fName != null && !fName.trim().isEmpty()) {
+            fullName.append(fName.trim());
+        }
+
+        if (lName != null && !lName.trim().isEmpty()) {
+            if (fullName.length() > 0) {
+                fullName.append(" ");
+            }
+            fullName.append(lName.trim());
+        }
+
+        return fullName.toString();
+    }
 
     public void initMyPreferences() {
         ArrayList<Preference> defPreList = new ArrayList<>();

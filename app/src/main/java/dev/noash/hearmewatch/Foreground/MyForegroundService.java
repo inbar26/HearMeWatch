@@ -158,6 +158,7 @@ public class MyForegroundService extends Service {
                                         break;
 
                                     case "Ambulance (siren)":
+                                    case "Emergency vehicle":
                                         handleSoundLabelNotification(this, SoundLabel.AMBULANCE_SIREN);
                                         break;
 
@@ -172,6 +173,7 @@ public class MyForegroundService extends Service {
                                         break;
 
                                     case "Civil defense siren":
+                                    case "Alarm":
                                         handleSoundLabelNotification(this, SoundLabel.CIVIL_DEFENSE);
                                         break;
 
@@ -184,6 +186,7 @@ public class MyForegroundService extends Service {
                                     case "Ding-dong":
                                     case "Bell":
                                     case "Jingle bell":
+                                    case "Ding":
                                         handleSoundLabelNotification(this, SoundLabel.INTERCOM);
                                        break;
 

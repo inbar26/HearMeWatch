@@ -2,24 +2,11 @@ package dev.noash.hearmewatch;
 
 public enum VibrationPattern {
 
-    DOUBLE_TAP("Double Tap", new long[]{0, 100, 100, 100}),
-    LONG_VIBRATION("Long Vibration", new long[]{0, 600}),
-    SHORT_LONG("Short-Long", new long[]{0, 100, 100, 400}),
-    HEARTBEAT("Heartbeat", new long[]{0, 150, 100, 150}),
-
-    DRUMROLL("Drumroll", new long[]{0, 80, 80, 80, 80, 80, 80}),
-    STEADY_PULSE("Steady Pulse", new long[]{0, 200, 200, 200}),
-    ALARM_PULSE("Alarm Pulse", new long[]{0, 300, 200, 300, 200, 300}),
-
-    BREATHE("Breathe", new long[]{0, 400, 400, 600}),
-
-    EMERGENCY("Emergency", new long[]{0, 500, 100, 500, 100, 500}),
-    RAPID_FIRE("Rapid Fire", new long[]{0, 100, 50, 100, 50, 100, 50, 100}),
-    PANIC_PULSE("Panic Pulse", new long[]{0, 200, 50, 200, 50, 200, 50, 200}),
-
-    SMS_STYLE("SMS Style", new long[]{0, 150, 100, 150}),
-
-    DEFAULT("Default", new long[]{0, 400});
+    DOUBLE_TAP("Quick Tap", new long[]{0L, 150L}),
+    LONG_VIBRATION("Double Pulse", new long[]{0L, 150L, 100L, 150L}),
+    SHORT_LONG("Steady Alarm", new long[]{0L, 300L, 200L, 300L}),
+    HEARTBEAT("Bold Buzz", new long[]{0L, 600L}),
+    DEFAULT("Default", new long[]{0L, 400L});
 
     private final String displayName;
     private final long[] pattern;
@@ -51,5 +38,8 @@ public enum VibrationPattern {
 
     public static long[] getPatternByName(String name) {
         return fromString(name).getPattern();
+    }
+    public static String getDisplayName(VibrationPattern label) {
+        return label.getDisplayName();
     }
 }

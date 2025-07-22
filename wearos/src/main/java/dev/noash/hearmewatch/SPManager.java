@@ -37,6 +37,6 @@ public class SPManager {
     }
 
     public String getVibrationType() {
-        return sp.getString(PREFERRED_VIBRATION_KEY, "default");
+        return sp.getString(PREFERRED_VIBRATION_KEY, VibrationPattern.getDisplayName(VibrationPattern.DEFAULT));
     }
 }

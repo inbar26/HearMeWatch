@@ -9,6 +9,7 @@ import android.os.Vibrator;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.os.VibrationEffect;
 import android.widget.ArrayAdapter;
@@ -42,6 +43,15 @@ public class VibrationListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         LV_items = view.findViewById(R.id.LV_items);
+
+        //Init list title + description
+        TextView tvTitle = view.findViewById(R.id.TV_title_list);
+        TextView tvSubtitle = view.findViewById(R.id.TV_subtitle);
+        ImageView ivIcon = view.findViewById(R.id.IV_title_icon_list);
+
+        tvTitle.setText("Vibration Type");
+        tvSubtitle.setText("Select your preferred vibration pattern for alerts");
+        ivIcon.setImageResource(R.drawable.ic_vibration);
 
         HashMap<String, Vibration> temp = DBManager.getInstance().getVibrationsList().getList();
         for (Map.Entry<String, Vibration> entry : temp.entrySet()) {

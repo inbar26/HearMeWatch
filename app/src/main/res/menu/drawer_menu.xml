@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/nav_dashboard"
+        android:title="@string/dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:layoutDirection="ltr" />
+
+    <item
         android:id="@+id/nav_profile"
         android:title="@string/profile"
         android:icon="@drawable/ic_profile"
@@ -14,15 +20,14 @@
         android:layoutDirection="ltr"/>
 
     <item
+        android:id="@+id/nav_accessibility"
+        android:title="@string/accessibility"
+        android:icon="@drawable/ic_accessibility"
+        android:layoutDirection="ltr"/>
+
+    <item
         android:id="@+id/nav_guide"
         android:title="@string/guide"
         android:icon="@drawable/ic_guide"
         android:layoutDirection="ltr"/>
-
-    <item
-        android:id="@+id/nav_logout"
-        android:title="@string/log_out"
-        android:icon="@drawable/ic_logout"
-        android:layoutDirection="ltr"/>
-
 </menu>

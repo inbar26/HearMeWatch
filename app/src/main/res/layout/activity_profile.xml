@@ -1,150 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#f1f1f1"
+    android:background="@color/background"
+    android:padding="16dp"
     android:layoutDirection="ltr">
 
+    <include
+        layout="@layout/page_header_view" />
+
+    <!-- Information section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:background="@android:color/white"
-        android:gravity="center_vertical"
-        android:layoutDirection="ltr"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:elevation="4dp">
-
-        <ImageButton
-            android:id="@+id/profile_BTN_back"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:backgroundTint="#f5f5f5"
-            android:src="@drawable/ic_back"
-            app:iconTint="@null"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            app:iconSize="32dp"
-            app:iconGravity="textEnd"
-            android:layout_marginEnd="8dp"/>
-
-        <TextView
-            android:id="@+id/profile_TV_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Profile"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="#000000"
-            android:fontFamily="sans-serif-light" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:background="#edf6f9"
-        android:padding="16dp"
-        android:layoutDirection="ltr">
-        <!-- Title + Intro Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="16dp">
-
-            <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:src="@drawable/ic_profile"
-                android:background="@drawable/circle_purple"
-                android:padding="16dp"
-                android:contentDescription="Guide Icon"
-                app:tint="#FFFFFF" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your Profile"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#1C1C1E"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Manage your account information"
-                android:textSize="16sp"
-                android:textColor="#4A4A4A"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:enabled="false"
-            android:layout_marginBottom="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ET_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:background="@color/white" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="First Name"
+        android:background="@drawable/frame_white"
+        android:padding="20dp"
         android:layout_marginBottom="16dp">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <!-- Information title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/personal_information"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:drawableStart="@drawable/ic_profile"
+            android:drawableTint="@color/black"
+            android:drawablePadding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- First name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/first_name"
+            android:textColor="@color/edit_text_title"
+            android:textSize="@dimen/edit_text_title"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText
             android:id="@+id/ET_first_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/frame_white"
+            android:hint="Israel"
+            android:paddingHorizontal="12dp"
+            android:textSize="@dimen/edit_text_title"
+            android:textColor="@color/black"
             android:inputType="textPersonName"
-            android:background="@color/white" />
+            android:layout_marginBottom="16dp" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+        <!-- Last name -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Last Name"
-            android:layout_marginBottom="16dp">
+            android:text="@string/last_name"
+            android:textColor="@color/edit_text_title"
+            android:textSize="@dimen/edit_text_title"
+            android:layout_marginBottom="4dp"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ET_last_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:background="@color/white" />
+        <EditText
+            android:id="@+id/ET_last_name"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/frame_white"
+            android:hint="Israeli"
+            android:paddingHorizontal="12dp"
+            android:textSize="@dimen/edit_text_title"
+            android:textColor="#000000"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+        <!-- Email -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email_address"
+            android:textColor="@color/edit_text_title"
+            android:textSize="@dimen/edit_text_title"
+            android:layout_marginBottom="4dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/BTN_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:textSize="16sp"
-        android:backgroundTint="@color/buttons"
-        android:textColor="@color/text_buttons"
-        android:layout_gravity="center_horizontal"
-        android:paddingHorizontal="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"/>
+        <EditText
+            android:id="@+id/ET_email"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/frame_white"
+            android:hint="email@gmail.com"
+            android:paddingHorizontal="12dp"
+            android:enabled="false"
+            android:textSize="@dimen/edit_text_title"
+            android:textColor="@color/edit_text_enabled"
+            android:layout_marginBottom="4dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email_cannot_be_changed"
+            android:textSize="12sp"
+            android:textColor="@color/edit_text_enabled"
+            android:layout_marginBottom="12dp"/>
     </LinearLayout>
+
+    <!-- Save button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/BTN_save_changes"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/buttons"
+        app:cornerRadius="14dp"
+        android:text="@string/save_changes"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:letterSpacing="0.01"
+        android:textAllCaps="false"
+        app:icon="@drawable/ic_save"
+        app:iconGravity="textStart"
+        app:iconTint="@android:color/white" />
+
 </LinearLayout>

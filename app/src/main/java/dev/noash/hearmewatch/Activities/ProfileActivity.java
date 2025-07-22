@@ -1,69 +1,93 @@
 package dev.noash.hearmewatch.Activities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
-import android.content.Intent;
-import android.widget.ImageButton;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.view.LayoutInflater;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.navigation.NavigationView;
 
 import dev.noash.hearmewatch.R;
 import dev.noash.hearmewatch.MyApp;
 import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.SPManager;
+import dev.noash.hearmewatch.Utilities.DrawerManager;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextInputEditText ET_fName;
-    private TextInputEditText ET_lName;
-    private TextInputEditText ET_email;
+    private EditText fName, lName, email;
     private MaterialButton submitBTN;
-    private ImageButton backBtn;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_with_drawer);
+        LayoutInflater.from(this).inflate(R.layout.activity_profile, findViewById(R.id.content_container), true); // 2. טוען את התוכן הספציפי
+
         findViews();
         initViews();
     }
 
     private void findViews() {
-        ET_fName = findViewById(R.id.ET_first_name);
-        ET_lName = findViewById(R.id.ET_last_name);
-        ET_email = findViewById(R.id.ET_email);
-        submitBTN = findViewById(R.id.BTN_submit);
-        backBtn = findViewById(R.id.profile_BTN_back);
+        fName = findViewById(R.id.ET_first_name);
+        lName = findViewById(R.id.ET_last_name);
+        email = findViewById(R.id.ET_email);
+        submitBTN = findViewById(R.id.BTN_save_changes);
     }
 
     private void initViews() {
         MyApp.setStatusBar(getWindow(), this);
         initReturnButton();
+        initDrawer();
+        initHeader();
         initFields();
 
         submitBTN.setOnClickListener(v -> updateUserDetails());
-        backBtn.setOnClickListener(v -> returnToHomePage());
+    }
+
+    private void initDrawer() {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        NavigationView navView = findViewById(R.id.navigation_view);
+        DrawerManager.setupDrawer(this, drawerLayout, toolbar, navView);
+
+        View headerView = navView.getHeaderView(0);
+        String userName = DBManager.getInstance().getUser().getName();
+        String userEmail = DBManager.getInstance().getUser().getEmail();
+        DrawerManager.updateUserCard(headerView, userName, userEmail);
+    }
+
+    private void initHeader() {
+        TextView title = findViewById(R.id.TV_page_title);
+        TextView subtitle = findViewById(R.id.TV_page_subtitle);
+
+        title.setText("Your Profile");
+        subtitle.setText("Manage your account information");
     }
 
     private void initFields() {
-        ET_email.setText(DBManager.getInstance().getUser().getEmail());
+        email.setText(DBManager.getInstance().getUser().getEmail());
 
         String fName = DBManager.getInstance().getUser().getfName();
         String lName = DBManager.getInstance().getUser().getlName();
 
         if(fName != null && !fName.isEmpty())
-            ET_fName.setText(fName);
+            this.fName.setText(fName);
 
         if(lName != null && !lName.isEmpty())
-            ET_lName.setText(lName);
+            this.lName.setText(lName);
     }
 
     private void updateUserDetails() {
-        String lName = ET_lName.getText().toString().trim();
-        String fName = ET_fName.getText().toString().trim();
+        String lName = this.lName.getText().toString().trim();
+        String fName = this.fName.getText().toString().trim();
 
         if (fName.isEmpty() && lName.isEmpty()) {
             Toast.makeText(this, "No data entered to save.", Toast.LENGTH_SHORT).show();
@@ -91,8 +115,5 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
     private void returnToHomePage() {
-        Intent i = new Intent(this, HomeActivity.class);
-        startActivity(i);
-        finish();
     }
 }
