@@ -206,6 +206,15 @@ public class DBManager {
                     System.err.println("Failed to save vibrations: " + e.getMessage());
                 });
     }
+
+    public Task<Void> updateUserProfileImageUrl(String url) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return Tasks.forException(new Exception("No logged-in user"));
+
+        currentUser.setProfileImageUrl(url);
+        return usersRef.child(user.getUid()).child("profileImageUrl").setValue(url);
+    }
+
 }
 
 

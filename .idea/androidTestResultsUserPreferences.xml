@@ -10,6 +10,7 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Tests" value="360" />
+                  <entry key="samsung SM-A225M" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
