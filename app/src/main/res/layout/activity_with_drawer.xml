@@ -20,7 +20,7 @@
             android:elevation="4dp" >
 
             <View
-                android:layout_width="20dp"
+                android:layout_width="18dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"/>
 
@@ -54,8 +54,8 @@
                         android:layout_gravity="center_vertical"/>
 
                     <ImageView
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
                         android:src="@drawable/img_logo"
                         android:layout_marginTop="4dp"/>
 
@@ -86,7 +86,10 @@
             android:layout_gravity="start"
             app:headerLayout="@layout/drawer_header_view"
             app:menu="@menu/drawer_menu"
-            app:itemVerticalPadding="24dp"/>
+            app:itemVerticalPadding="22dp"
+            app:itemHorizontalPadding="38dp"
+            app:itemTextColor="@color/icon_text_menu_item"
+            app:itemIconTint="@color/icon_text_menu_item"/>
 
         <View
             android:layout_width="220dp"
@@ -100,16 +103,15 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="26dp">
 
             <ImageButton
                 android:id="@+id/IB_logout_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_logout"
-                app:tint="@color/sign_out_icon"
+                app:tint="@color/icon_text_menu_item"
                 android:backgroundTint="@color/fui_transparent"
                 android:layout_marginEnd="12dp"/>
 
@@ -117,8 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sign_out"
-                android:textColor="@color/sign_out_text"
-                android:textStyle="normal"
+                android:textColor="@color/icon_text_menu_item"
                 android:textSize="@dimen/text_sign_out"/>
         </LinearLayout>
     </LinearLayout>

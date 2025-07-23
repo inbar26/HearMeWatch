@@ -64,16 +64,41 @@ public class DrawerManager {
             return true;
         });
 
-        navView.post(() -> {
-            MenuItem item = navView.getMenu().findItem(R.id.nav_profile);
-            View itemView = navView.findViewById(item.getItemId());
+        if (current_id != -1) {
+            navView.setCheckedItem(current_id);
 
-            if (itemView != null) {
-                itemView.setBackgroundResource(R.drawable.bg_menu_item_blue);
-            } else {
-                Log.d("DEBUG", "itemView is null");
-            }
-        });
+            // 🟢 שלב 2: שינוי רקע לפריט הנבחר בלבד
+            int finalActiveItemId = current_id;
+            navView.post(() -> {
+                for (int i = 0; i < navView.getMenu().size(); i++) {
+                    MenuItem menuItem = navView.getMenu().getItem(i);
+                    View itemView = navView.findViewById(menuItem.getItemId());
+
+                    if (itemView != null) {
+                        if (menuItem.getItemId() == finalActiveItemId) {
+                            itemView.setBackgroundResource(R.drawable.bg_menu_item_blue);
+                        } else {
+                            itemView.setBackground(null);
+                        }
+                    }
+                }
+            });
+//        int finalActiveItemId = id;
+//        navView.post(() -> {
+//            for (int i = 0; i < navView.getMenu().size(); i++) {
+//                MenuItem menuItem = navView.getMenu().getItem(i);
+//                View itemView = navView.findViewById(menuItem.getItemId());
+//
+//                if (itemView != null) {
+//                    if (menuItem.getItemId() == finalActiveItemId) {
+//                        itemView.setBackgroundResource(R.drawable.bg_menu_item_blue);
+//                    } else {
+//                        itemView.setBackground(null);
+//                    }
+//                }
+//            }
+//        });
+        }
     }
 
     public static void updateUserCard(NavigationView navView, View headerView, String name, String email) {

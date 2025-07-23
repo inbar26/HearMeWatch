@@ -143,10 +143,11 @@
     <!-- Save button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/BTN_save_changes"
-        android:layout_width="match_parent"
-        android:layout_height="76dp"
+        android:layout_width="300dp"
+        android:layout_height="56dp"
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/buttons"
+        android:layout_gravity="center_horizontal"
         app:cornerRadius="14dp"
         android:text="@string/save_changes"
         android:textSize="16sp"

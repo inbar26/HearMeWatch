@@ -20,12 +20,6 @@
         android:layoutDirection="ltr"/>
 
     <item
-        android:id="@+id/nav_accessibility"
-        android:title="@string/accessibility"
-        android:icon="@drawable/ic_accessibility"
-        android:layoutDirection="ltr"/>
-
-    <item
         android:id="@+id/nav_guide"
         android:title="@string/guide"
         android:icon="@drawable/ic_guide"

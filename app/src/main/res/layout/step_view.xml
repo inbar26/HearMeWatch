@@ -10,15 +10,15 @@
         <!-- Step number -->
         <TextView
             android:id="@+id/TV_step_number"
-            android:layout_width="40dp"
-            android:layout_height="28dp"
+            android:layout_width="28dp"
+            android:layout_height="24dp"
             android:gravity="center"
             android:hint="1"
             android:background="@drawable/bg_step_number_blue"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             android:textSize="14sp"
-            android:layout_marginEnd="12dp" />
+            android:layout_marginEnd="10dp" />
 
         <!-- Info -->
         <LinearLayout
@@ -30,12 +30,12 @@
             <TextView
                 android:id="@+id/TV_step_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="22dp"
                 android:hint="Step title"
                 android:textSize="@dimen/text_step_name"
                 android:textStyle="bold"
                 android:textColor="@color/text_step_name"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginBottom="4dp"/>
 
             <!-- Step description -->
             <TextView
