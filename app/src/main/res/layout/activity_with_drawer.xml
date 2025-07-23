@@ -20,7 +20,7 @@
             android:elevation="4dp" >
 
             <View
-                android:layout_width="56dp"
+                android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"/>
 
@@ -39,7 +39,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_gravity="center"
                     android:gravity="center_horizontal">
 
@@ -50,16 +50,15 @@
                         android:textStyle="bold"
                         android:textColor="#1B1F31"
                         android:textSize="@dimen/text_app_name_title"
-                        android:layout_marginBottom="6dp"
-                        android:fontFamily="@font/font_app_name" />
+                        android:fontFamily="@font/font_app_name"
+                        android:layout_gravity="center_vertical"/>
 
-                    <TextView
-                        android:id="@+id/toolbar_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Voice Recording Assistant"
-                        android:textColor="@color/text_app_name_subtitle"
-                        android:textSize="@dimen/text_app_name_subtitle" />
+                    <ImageView
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:src="@drawable/img_logo"
+                        android:layout_marginTop="4dp"/>
+
                 </LinearLayout>
             </FrameLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -79,14 +78,15 @@
         android:layout_gravity="start"
         android:background="@color/white">
 
-    <!-- NavigationView (drawer) -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/drawer_header_view"
-        app:menu="@menu/drawer_menu"/>
+        <!-- NavigationView (drawer) -->
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/drawer_header_view"
+            app:menu="@menu/drawer_menu"
+            app:itemVerticalPadding="24dp"/>
 
         <View
             android:layout_width="220dp"

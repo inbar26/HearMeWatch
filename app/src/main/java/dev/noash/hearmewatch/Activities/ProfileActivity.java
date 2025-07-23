@@ -81,7 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
         View headerView = navView.getHeaderView(0);
         String userName = DBManager.getInstance().getUser().getName();
         String userEmail = DBManager.getInstance().getUser().getEmail();
-        DrawerManager.updateUserCard(headerView, userName, userEmail);
+        DrawerManager.updateUserCard(navView, headerView, userName, userEmail);
     }
 
     private void initHeader() {
@@ -120,6 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
                         DBManager.getInstance().getUser().setName(fName, lName);
                         SPManager.getInstance().setUserName(fName);
                         Toast.makeText(this, "User updated successfully.", Toast.LENGTH_SHORT).show();
+                        initDrawer();
                     } else {
                         Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
                     }

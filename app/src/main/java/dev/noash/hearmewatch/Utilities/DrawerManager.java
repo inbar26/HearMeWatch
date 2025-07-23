@@ -1,5 +1,7 @@
 package dev.noash.hearmewatch.Utilities;
 
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+
 import dev.noash.hearmewatch.R;
 import dev.noash.hearmewatch.Activities.HomeActivity;
 import dev.noash.hearmewatch.Activities.GuideActivity;
@@ -18,6 +22,7 @@ import dev.noash.hearmewatch.Activities.ProfileActivity;
 import dev.noash.hearmewatch.Activities.PreferencesActivity;
 
 public class DrawerManager {
+    private static Integer current_id = R.id.nav_dashboard;
 
     public static void setupDrawer(Activity activity, DrawerLayout drawerLayout, Toolbar toolbar, NavigationView navView) {
         ((AppCompatActivity) activity).setSupportActionBar(toolbar);
@@ -37,12 +42,16 @@ public class DrawerManager {
             Intent intent = null;
 
             if (id == R.id.nav_dashboard) {
+                current_id = R.id.nav_dashboard;
                 intent = new Intent(activity, HomeActivity.class);
             } else if (id == R.id.nav_profile) {
+                current_id = R.id.nav_profile;
                 intent = new Intent(activity, ProfileActivity.class);
             } else if (id == R.id.nav_preferences) {
+                current_id = R.id.nav_preferences;
                 intent = new Intent(activity, PreferencesActivity.class);
             } else if (id == R.id.nav_guide) {
+                current_id = R.id.nav_guide;
                 intent = new Intent(activity, GuideActivity.class);
             }
 
@@ -54,9 +63,30 @@ public class DrawerManager {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+
+        navView.post(() -> {
+            MenuItem item = navView.getMenu().findItem(R.id.nav_profile);
+            View itemView = navView.findViewById(item.getItemId());
+
+            if (itemView != null) {
+                itemView.setBackgroundResource(R.drawable.bg_menu_item_blue);
+            } else {
+                Log.d("DEBUG", "itemView is null");
+            }
+        });
     }
 
-    public static void updateUserCard(View headerView, String name, String email) {
+    public static void updateUserCard(NavigationView navView, View headerView, String name, String email) {
+        MenuItem item = navView.getMenu().findItem(R.id.nav_profile);
+        View itemView = navView.findViewById(item.getItemId());
+        Integer id = item.getItemId();
+      //  itemView.setBackgroundResource(R.drawable.bg_menu_item_blue);
+
+
+        if (itemView != null) {
+            itemView.setBackgroundResource(R.drawable.bg_menu_item_blue);
+        }
+
         TextView tvAvatar = headerView.findViewById(R.id.TV_header_user_avatar);
         TextView tvName = headerView.findViewById(R.id.TV_header_user_name);
         TextView tvEmail = headerView.findViewById(R.id.TV_header_user_email);

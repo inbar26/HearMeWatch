@@ -25,4 +25,5 @@
     <color name="edit_text_title">#444444</color>
     <color name="edit_text_enabled">#888888</color>
     <color name="text_step_title">#1C1C1E</color>
+    <color name="menu_item">#DDF7FF</color>
 </resources>

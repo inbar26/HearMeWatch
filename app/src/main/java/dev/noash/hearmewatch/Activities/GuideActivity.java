@@ -117,7 +117,7 @@ public class GuideActivity extends AppCompatActivity {
         View headerView = navView.getHeaderView(0);
         String userName = DBManager.getInstance().getUser().getName();
         String userEmail = DBManager.getInstance().getUser().getEmail();
-        DrawerManager.updateUserCard(headerView, userName, userEmail);
+        DrawerManager.updateUserCard(navView, headerView, userName, userEmail);
     }
 
     private void initHeader() {
