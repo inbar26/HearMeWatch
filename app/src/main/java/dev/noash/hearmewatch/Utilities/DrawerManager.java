@@ -161,7 +161,7 @@ public class DrawerManager {
         } else {
             // Show letter avatar, hide image view
             if (tvAvatar != null) {
-                String firstLetter = (name != null && !name.isEmpty()) ? name.substring(0, 1).toUpperCase() : "?";
+                String firstLetter = (name != null && !name.isEmpty()) ? name.substring(0, 1).toUpperCase() : "";
                 tvAvatar.setText(firstLetter);
                 tvAvatar.setBackgroundResource(R.drawable.bg_user_avatar);
                 tvAvatar.setVisibility(View.VISIBLE);

@@ -25,8 +25,6 @@
     <string name="privacy_notice"><![CDATA[<b>Your privacy is protected :</b><br>Audio is processed in real time and is never stored. All sound recognition happens locally on your device.]]></string>
     <string name="make_sure_your_watch_is_connected_and_nearby_for_optimal_sound_detection_functionality">Make sure your watch is connected and nearby for optimal sound detection functionality.</string>
     <string name="pay_attention">Pay Attention</string>
-    <string name="need_help">Need help?</string>
-    <string name="contact_us">Contact us</string>
 
 
 </resources>

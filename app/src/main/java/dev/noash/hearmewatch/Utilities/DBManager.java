@@ -11,12 +11,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.Map;
 import java.util.List;
@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 import dev.noash.hearmewatch.Objects.User;
-import dev.noash.hearmewatch.Objects.Preference;
 import dev.noash.hearmewatch.Objects.Vibration;
+import dev.noash.hearmewatch.Objects.Preference;
 import dev.noash.hearmewatch.Objects.VibrationList;
 
 public class DBManager {
@@ -43,6 +43,7 @@ public class DBManager {
     private static VibrationList vibrationsList;
     public static final String IMAGE_STORAGE_REF_START = "profile_images/";
     public static final String IMAGE_STORAGE_REF_END = ".jpg";
+    public static final String IMAGE_STORAGE_REF = "profileImageUrl";
 
 
     public interface CallBack<T> { void res(T res); }
@@ -217,7 +218,7 @@ public class DBManager {
     public Task<Void> updateUserProfileImageUrl(String url) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        return usersRef.child(user.getUid()).child("profileImageUrl").setValue(url);
+        return usersRef.child(user.getUid()).child(IMAGE_STORAGE_REF).setValue(url);
     }
 
     public void removeProfilePhotoFromFirebase(CallBack<Boolean> callBack) {
@@ -229,7 +230,7 @@ public class DBManager {
         storageRef.delete()
                 .addOnSuccessListener(aVoid -> {
                     usersRef.child(user.getUid())
-                            .child("profileImageUrl")
+                            .child(IMAGE_STORAGE_REF)
                             .removeValue()
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
@@ -251,16 +252,17 @@ public class DBManager {
 
         storageRef.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> {
+
                     storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         String downloadUrl = uri.toString();
-                   //     getUser().setProfileImageUrl(downloadUrl);
-
                         updateUserProfileImageUrl(downloadUrl)
                                 .addOnSuccessListener(aVoid -> {
+
                                     getUser().setProfileImageUrl(downloadUrl);
                                     callBack.res(true);
                                 })
                                 .addOnFailureListener(e -> callBack.res(false));
+
                     }).addOnFailureListener(e -> callBack.res(false));
                 })
                 .addOnFailureListener(e -> callBack.res(false));

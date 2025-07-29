@@ -112,7 +112,7 @@ public class ProfileActivity extends AppCompatActivity {
             this.lName.setText(lName);
 
         if (profileImageTV != null) {
-            String firstLetter = (fName != null && !fName.isEmpty()) ? fName.substring(0, 1).toUpperCase() : "?";
+            String firstLetter = (fName != null && !fName.isEmpty()) ? fName.substring(0, 1).toUpperCase() : "";
             profileImageTV.setText(firstLetter);
             profileImageTV.setBackgroundResource(R.drawable.bg_user_avatar);
         }
@@ -157,8 +157,6 @@ public class ProfileActivity extends AppCompatActivity {
         builder.show();
     }
 
-    // Below are functions for saving and managing the user's profile image URL.
-    // Displays the user's profile image if available; otherwise, shows the first initial inside a circular view.
     private void updateProfileImageView() {
         String imageUrl = DBManager.getInstance().getUser().getProfileImageUrl();
         String firstName = DBManager.getInstance().getUser().getfName();
@@ -179,7 +177,7 @@ public class ProfileActivity extends AppCompatActivity {
             if (firstName != null && !firstName.isEmpty()) {
                 profileImageTV.setText(String.valueOf(firstName.charAt(0)).toUpperCase());
             } else {
-                profileImageTV.setText("?");
+                profileImageTV.setText("");
             }
 
             profileImageTV.setBackgroundResource(R.drawable.bg_user_avatar);
