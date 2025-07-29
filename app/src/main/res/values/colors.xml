@@ -27,5 +27,5 @@
     <color name="text_step_title">#1C1C1E</color>
     <color name="menu_item">#DDF7FF</color>
     <color name="icon_text_menu_item">#4A5B6D</color>
-
+    <color name="snackbar_action">#4CAF50</color>
 </resources>

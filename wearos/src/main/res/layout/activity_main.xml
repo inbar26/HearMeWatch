@@ -32,4 +32,6 @@
         android:textStyle="bold"
         android:lineSpacingExtra="6dp"
         android:gravity="center" />
+
+
 </FrameLayout>

@@ -1,13 +1,13 @@
 package dev.noash.hearmewatch.Activities;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.view.LayoutInflater;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -17,9 +17,9 @@ import dev.noash.hearmewatch.Fragments.VibrationListFragment;
 
 import dev.noash.hearmewatch.R;
 import dev.noash.hearmewatch.MyApp;
-import dev.noash.hearmewatch.Fragments.PreferenceListFragment;
 import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.DrawerManager;
+import dev.noash.hearmewatch.Fragments.PreferenceListFragment;
 
 public class PreferencesActivity extends AppCompatActivity {
 

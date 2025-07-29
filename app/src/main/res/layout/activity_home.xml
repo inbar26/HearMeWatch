@@ -18,10 +18,9 @@
         android:background="@drawable/frame_white"
         android:padding="16dp"
         android:layout_gravity="center_horizontal"
-        android:elevation="4dp"
         android:layout_marginBottom="6dp">
 
-    <!-- עיגול -->
+        <!-- Status card -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,6 +30,7 @@
             android:layout_marginBottom="8dp">
 
             <View
+                android:id="@+id/dotStatus"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:background="@drawable/dot_gray"
@@ -46,14 +46,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="12dp" />
         </LinearLayout>
-
     </LinearLayout>
 
-
-
-        <!-- כפתור -->
-
-        <!-- טקסט פרטיות -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,7 +85,25 @@
         android:gravity="center"
         app:icon="@drawable/ic_radar"
         app:iconGravity="textStart"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/BTN_stop_detection"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:text="Stop Detection"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:letterSpacing="0.06"
+        android:backgroundTint="#4CAF50"
+        android:textColor="@android:color/white"
+        app:cornerRadius="12dp"
+        android:gravity="center"
+        app:icon="@drawable/ic_stop"
+        app:iconGravity="textStart"
+        android:layout_marginBottom="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +114,6 @@
         android:layout_gravity="center_horizontal"
         android:elevation="2dp">
 
-        <!-- עיגול עם סימן קריאה ! -->
         <FrameLayout
             android:layout_width="22dp"
             android:layout_height="22dp"
@@ -120,14 +131,12 @@
                 android:gravity="center"/>
         </FrameLayout>
 
-        <!-- חלק טקסטואלי -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content">
 
-            <!-- Pay Attention והאייקון באותה שורה -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,18 +146,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="26dp"
-                    android:text="Pay Attention"
+                    android:text="@string/pay_attention"
                     android:textStyle="bold"
                     android:textSize="14sp"
                     android:textColor="#BF360C"
                     android:gravity="center_vertical"/>
             </LinearLayout>
 
-            <!-- שורת ההסבר -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Make sure your watch is connected and nearby for optimal sound detection functionality."
+                android:text="@string/make_sure_your_watch_is_connected_and_nearby_for_optimal_sound_detection_functionality"
                 android:textSize="12sp"
                 android:textColor="#BF360C"
                 android:lineSpacingExtra="4dp"
@@ -176,7 +184,7 @@
                 android:id="@+id/tvHelp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Need help? "
+                android:text="@string/need_help"
                 android:textColor="#6C757D"
                 android:textSize="12sp"/>
 
@@ -184,7 +192,7 @@
                 android:id="@+id/tvContactUs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Contact us"
+                android:text="@string/contact_us"
                 android:textColor="#6C757D"
                 android:textSize="12sp"
                 android:textStyle="bold"

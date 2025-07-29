@@ -5,13 +5,7 @@
       <SelectionState runConfigName="wearos">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'dev.noash.hearmewatch'">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="app">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="Tests in 'dev.noash.hearmewatch'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

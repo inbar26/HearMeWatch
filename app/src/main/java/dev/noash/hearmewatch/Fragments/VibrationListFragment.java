@@ -31,7 +31,6 @@ import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.SPManager;
 
 public class VibrationListFragment extends Fragment {
-
     private ListView LV_items;
     private final ArrayList<Vibration> vibrations = new ArrayList<>();
     private ArrayAdapter<Vibration> adapter;
@@ -59,7 +58,7 @@ public class VibrationListFragment extends Fragment {
         }
 
         //Load selected vibration option
-        String savedVibration = SPManager.getInstance().getPreferredVibration();
+        String savedVibration = DBManager.getInstance().getUser().getChosenVibration();
         if (savedVibration != null) {
             for (int i = 0; i < vibrations.size(); i++) {
                 if (vibrations.get(i).getName().equals(savedVibration)) {

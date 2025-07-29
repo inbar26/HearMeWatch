@@ -1,6 +1,7 @@
 package dev.noash.hearmewatch.Utilities;
 
 import android.content.Context;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
@@ -14,6 +15,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Map;
 import java.util.List;
@@ -29,6 +32,7 @@ public class DBManager {
     private static DBManager dbManager;
     private static Context context;
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private static final FirebaseStorage storage = FirebaseStorage.getInstance();
     public static final String USERS_REF = "users";
     public static final String MY_PREFERENCES_REF = "myPreferences";
     private static final DatabaseReference usersRef = database.getReference(USERS_REF);
@@ -37,6 +41,8 @@ public class DBManager {
     private static final DatabaseReference vibrationsRef = database.getReference(VIBRATIONS_REF);
     private static User currentUser = new User();
     private static VibrationList vibrationsList;
+    public static final String IMAGE_STORAGE_REF_START = "profile_images/";
+    public static final String IMAGE_STORAGE_REF_END = ".jpg";
 
 
     public interface CallBack<T> { void res(T res); }
@@ -109,6 +115,7 @@ public class DBManager {
 
         user.setId(firebaseUser.getUid());
         user.initMyPreferences();
+        user.setChosenVibration("Default");
 
         if (firebaseUser.getEmail() != null)
             user.setEmail(firebaseUser.getEmail());
@@ -209,12 +216,55 @@ public class DBManager {
 
     public Task<Void> updateUserProfileImageUrl(String url) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return Tasks.forException(new Exception("No logged-in user"));
 
-        currentUser.setProfileImageUrl(url);
         return usersRef.child(user.getUid()).child("profileImageUrl").setValue(url);
     }
 
+    public void removeProfilePhotoFromFirebase(CallBack<Boolean> callBack) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        StorageReference storageRef = storage
+                .getReference(IMAGE_STORAGE_REF_START + user.getUid() + IMAGE_STORAGE_REF_END);
+
+        storageRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    usersRef.child(user.getUid())
+                            .child("profileImageUrl")
+                            .removeValue()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    getUser().setProfileImageUrl(null);
+                                    callBack.res(true);
+                                } else {
+                                    callBack.res(false);
+                                }
+                            });
+                })
+                .addOnFailureListener(e -> callBack.res(false));
+    }
+
+    public void uploadProfileImageToFirebase(Uri imageUri, CallBack<Boolean> callBack) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        StorageReference storageRef = storage
+                .getReference(IMAGE_STORAGE_REF_START + user.getUid() + IMAGE_STORAGE_REF_END);
+
+        storageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String downloadUrl = uri.toString();
+                   //     getUser().setProfileImageUrl(downloadUrl);
+
+                        updateUserProfileImageUrl(downloadUrl)
+                                .addOnSuccessListener(aVoid -> {
+                                    getUser().setProfileImageUrl(downloadUrl);
+                                    callBack.res(true);
+                                })
+                                .addOnFailureListener(e -> callBack.res(false));
+                    }).addOnFailureListener(e -> callBack.res(false));
+                })
+                .addOnFailureListener(e -> callBack.res(false));
+    }
 }
 
 

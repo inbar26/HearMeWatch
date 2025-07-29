@@ -23,7 +23,10 @@
     <string name="when_a_sound_is_detected_that_matches_your_selected_categories_you_ll_receive_an_instant_alert_on_your_smartwatch_with">When a sound is detected that matches your selected categories, you\'ll receive an instant alert on your smartwatch with :</string>
     <string name="privacy_amp_security"><![CDATA[Privacy & Security]]></string>
     <string name="privacy_notice"><![CDATA[<b>Your privacy is protected :</b><br>Audio is processed in real time and is never stored. All sound recognition happens locally on your device.]]></string>
-
+    <string name="make_sure_your_watch_is_connected_and_nearby_for_optimal_sound_detection_functionality">Make sure your watch is connected and nearby for optimal sound detection functionality.</string>
+    <string name="pay_attention">Pay Attention</string>
+    <string name="need_help">Need help?</string>
+    <string name="contact_us">Contact us</string>
 
 
 </resources>

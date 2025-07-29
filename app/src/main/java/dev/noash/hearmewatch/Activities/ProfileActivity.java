@@ -1,35 +1,31 @@
 package dev.noash.hearmewatch.Activities;
 
-import android.Manifest;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.provider.MediaStore;
+import android.Manifest;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.os.Bundle;
 import android.widget.Toast;
+import android.content.Intent;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.content.ContentValues;
+import android.content.pm.PackageManager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -39,23 +35,19 @@ import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.SPManager;
 import dev.noash.hearmewatch.Utilities.DrawerManager;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private EditText fName, lName, email;
-    private MaterialButton submitBTN;
-    private TextView tvImageProfile ;
-    private ImageView imProfilePhoto;
-
-    private MaterialButton tvImageButton;
-
+    private MaterialButton saveChangesBtn, editImageBtn;
+    private TextView profileImageTV;
+    private ImageView profileImageIV;
     private static final int PICK_IMAGE_REQUEST = 1001;
     private static final int CAMERA_REQUEST = 1002;
     private Uri cameraImageUri;
-    private Uri imageUri;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +62,10 @@ public class ProfileActivity extends AppCompatActivity {
         fName = findViewById(R.id.ET_first_name);
         lName = findViewById(R.id.ET_last_name);
         email = findViewById(R.id.ET_email);
-        submitBTN = findViewById(R.id.BTN_save_changes);
-        tvImageProfile = findViewById(R.id.IV_profile_picture);
-        imProfilePhoto = findViewById(R.id.IV_profile_photo);
-        tvImageButton = findViewById(R.id.BTN_choose_image);
+        saveChangesBtn = findViewById(R.id.BTN_save_changes);
+        editImageBtn = findViewById(R.id.BTN_choose_image);
+        profileImageTV = findViewById(R.id.IV_profile_picture);
+        profileImageIV = findViewById(R.id.IV_profile_photo);
     }
 
     private void initViews() {
@@ -83,16 +75,8 @@ public class ProfileActivity extends AppCompatActivity {
         initHeader();
         initFields();
 
-        submitBTN.setOnClickListener(v -> updateUserDetails());
-
-        //String firstN = DBManager.getInstance().getUser().getfName();
-
-//        if (tvImageProfile != null && firstN != null && !firstN.isEmpty()) {
-//            String firstLetter = firstN.substring(0, 1).toUpperCase();
-//            tvImageProfile.setText(firstLetter);
-//        }
-
-        tvImageButton.setOnClickListener(v -> uploadPhoto());
+        saveChangesBtn.setOnClickListener(v -> updateUserDetails());
+        editImageBtn.setOnClickListener(v -> showUploadPhotoOptions());
     }
 
     private void initDrawer() {
@@ -126,6 +110,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         if(lName != null && !lName.isEmpty())
             this.lName.setText(lName);
+
+        if (profileImageTV != null) {
+            String firstLetter = (fName != null && !fName.isEmpty()) ? fName.substring(0, 1).toUpperCase() : "?";
+            profileImageTV.setText(firstLetter);
+            profileImageTV.setBackgroundResource(R.drawable.bg_user_avatar);
+        }
     }
 
     private void updateUserDetails() {
@@ -144,21 +134,27 @@ public class ProfileActivity extends AppCompatActivity {
                         SPManager.getInstance().setUserName(fName);
                         Toast.makeText(this, "User updated successfully.", Toast.LENGTH_SHORT).show();
                         initDrawer();
+                        initFields();
                     } else {
                         Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void initReturnButton() {
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                returnToHomePage();
+    private void showUploadPhotoOptions() { // Shows an options dialog for editing the profile photo: take photo, choose from gallery, or delete photo
+        String[] options = {"Take Photo", "Choose from Gallery","Delete photo"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit profile picture");
+        builder.setItems(options, (dialog, which) -> {
+            if (which == 0) {
+                checkAndRequestCameraPermission();
+            } else if (which == 1) {
+                checkAndRequestGalleryPermission();
+            } else if (which == 2) {
+                removeProfilePhoto();
             }
         });
-    }
-    private void returnToHomePage() {
+        builder.show();
     }
 
     // Below are functions for saving and managing the user's profile image URL.
@@ -168,36 +164,34 @@ public class ProfileActivity extends AppCompatActivity {
         String firstName = DBManager.getInstance().getUser().getfName();
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            imProfilePhoto.setVisibility(View.VISIBLE);
-            tvImageProfile.setVisibility(View.GONE);
+            profileImageIV.setVisibility(View.VISIBLE);
+            profileImageTV.setVisibility(View.GONE);
 
             Glide.with(this)
                     .load(imageUrl)
                     .placeholder(R.drawable.bg_user_avatar)
-                    .into(imProfilePhoto);
+                    .into(profileImageIV);
 
         } else {
-            imProfilePhoto.setVisibility(View.GONE);
-            tvImageProfile.setVisibility(View.VISIBLE);
+            profileImageIV.setVisibility(View.GONE);
+            profileImageTV.setVisibility(View.VISIBLE);
 
             if (firstName != null && !firstName.isEmpty()) {
-                tvImageProfile.setText(String.valueOf(firstName.charAt(0)).toUpperCase());
+                profileImageTV.setText(String.valueOf(firstName.charAt(0)).toUpperCase());
             } else {
-                tvImageProfile.setText("?");
+                profileImageTV.setText("?");
             }
 
-            tvImageProfile.setBackgroundResource(R.drawable.bg_user_avatar);
+            profileImageTV.setBackgroundResource(R.drawable.bg_user_avatar);
         }
     }
 
-    // Opens the device's gallery to allow the user to select a photo.
-    private void openGallery() {
+    private void openGallery() { // Opens the device's gallery to allow the user to select a photo
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-    // Launches the camera app to take a new photo and save it.
-    private void openCamera() {
+    private void openCamera() { // Launches the camera app to take a new photo and save it
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
         values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera");
@@ -208,8 +202,7 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(intent, CAMERA_REQUEST);
     }
 
-    // Checks for gallery access permission and requests it if not already granted.
-    private void checkAndRequestGalleryPermission() {
+    private void checkAndRequestGalleryPermission() { // Checks for gallery access permission and requests it if not already granted
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 2001);
@@ -225,8 +218,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    // Checks for camera access permission and requests it if not already granted.
-    private void checkAndRequestCameraPermission() {
+    private void checkAndRequestCameraPermission() { // Checks for camera access permission and requests it if not already granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2002);
         } else {
@@ -234,44 +226,20 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    // Uploads the selected image to Firebase Storage and saves its download URL in the Realtime Database.
     private void uploadImageToFirebase(Uri imageUri) {
-        String uid = DBManager.getInstance().fetchCurrentUser().getUid();
-
-        // create a reference to the user's profile image in Firebase Storage
-        StorageReference storageRef = FirebaseStorage.getInstance()
-                .getReference("profile_images/" + uid + ".jpg");
-
-        // upload the image to Firebase Storage
-        storageRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    // get the download URL
-                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        String downloadUrl = uri.toString();
-
-                        // Save image URL to user object and database
-                        DBManager.getInstance().getUser().setProfileImageUrl(downloadUrl);
-
-                        DBManager.getInstance().updateUserProfileImageUrl(downloadUrl)
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-
-                                    // Update the UI with the new image
-                                    updateProfileImageView();
-                                })
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(this, "Failed to save image URL to database", Toast.LENGTH_SHORT).show()
-                                );
-                    });
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show()
-                );
+        DBManager.getInstance().uploadProfileImageToFirebase(imageUri, res -> {
+            if (res) {
+                Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                updateProfileImageView();
+                initDrawer();
+            } else {
+                Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    // Handles the result from gallery or camera, and triggers image upload to Firebase.
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) { // Handles the result from gallery or camera, and triggers image upload to Firebase
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
@@ -289,59 +257,30 @@ public class ProfileActivity extends AppCompatActivity {
                 uploadImageToFirebase(selectedImageUri);
             } else {
             Log.e("ImageUpload", "selectedImageUri is NULL ");
-        }
-
+            }
         }
     }
 
-    // Deletes the user's profile photo from Firebase Storage and removes the URL from the database.
     private void removeProfilePhoto() {
-        String uid = DBManager.getInstance().fetchCurrentUser().getUid();
-
-        StorageReference storageRef = FirebaseStorage.getInstance()
-                .getReference("profile_images/" + uid + ".jpg");
-
-        storageRef.delete()
-                .addOnSuccessListener(aVoid -> {
-                    FirebaseDatabase.getInstance().getReference("users")
-                            .child(uid)
-                            .child("profileImageUrl")
-                            .removeValue();
-
-                    DBManager.getInstance().getUser().setProfileImageUrl(null);
-
-                    String firstName = DBManager.getInstance().getUser().getfName();
-                    if (firstName != null && !firstName.isEmpty()) {
-                        String initial = firstName.substring(0, 1).toUpperCase();
-                        tvImageProfile.setText(initial);
-                        tvImageProfile.setVisibility(View.VISIBLE);
-                    }
-
-                    imProfilePhoto.setVisibility(View.GONE);
-
-                    Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to remove photo", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    // Shows an options dialog for editing the profile photo: take photo, choose from gallery, or delete photo.
-    private void uploadPhoto() {
-        Toast.makeText(this, "Upload photo", Toast.LENGTH_SHORT).show();
-        String[] options = {"Take Photo", "Choose from Gallery","Delete photo"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Edit profile picture");
-        builder.setItems(options, (dialog, which) -> {
-            if (which == 0) {
-                checkAndRequestCameraPermission();
-            } else if (which == 1) {
-                checkAndRequestGalleryPermission();
-            } else if (which == 2) {
-            removeProfilePhoto();
-        }
+        DBManager.getInstance().removeProfilePhotoFromFirebase(res -> {
+            if (res) {
+                updateProfileImageView();
+                initDrawer();
+                Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to remove photo", Toast.LENGTH_SHORT).show();
+            }
         });
-        builder.show();
     }
-    // Finished all profile picture related operations
+
+    private void initReturnButton() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                returnToHomePage();
+            }
+        });
+    }
+    private void returnToHomePage() {
+    }
 }

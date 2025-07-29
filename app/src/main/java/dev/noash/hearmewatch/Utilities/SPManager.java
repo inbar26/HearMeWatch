@@ -49,7 +49,6 @@ public class SPManager {
         editor.apply();
     }
 
-
     public boolean getBoolean(String key, boolean defaultValue) {
         return sp.getBoolean(key, defaultValue);
     }

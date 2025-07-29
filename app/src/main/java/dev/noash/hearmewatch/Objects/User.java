@@ -7,10 +7,10 @@ public class User {
     private String fName;
     private String lName;
     private String email;
-
     private String profileImageUrl;
     private PreferenceList myPreferences = new PreferenceList();
     private String chosenVibration;
+
     public User() {}
 
     public User(User user) {
@@ -53,7 +53,6 @@ public class User {
     public String getProfileImageUrl() {
         return profileImageUrl;
     }
-
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
