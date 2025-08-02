@@ -29,11 +29,13 @@ People with hearing impairments often face challenges in detecting important sou
 
 - Kotlin & Java (Android)
 - TensorFlow Lite
-- Edge Impulse C++ SDK
-- Android Foreground Service
-- Firebase Realtime Database
-- Wear OS communication (MessageClient / NodeClient)
-- JNI Integration for native inference
+- [YAMNet Model](app/src/main/java/dev/noash/hearmewatch/YamnetRunner.java)
+- [Edge Impulse C++ SDK](app/src/main/cpp)
+- [Foreground Service](app/src/main/java/dev/noash/hearmewatch/Foreground/MyForegroundService.java)
+- [Firebase Realtime Database](app/src/main/java/dev/noash/hearmewatch/Utilities/DBManager.java)
+- [SharedPreferences](app/src/main/java/dev/noash/hearmewatch/Utilities/SPManager.java)
+- [Wear OS communication (MessageClient / NodeClient)](wearos/src/main/java/dev/noash/hearmewatch/MessageReceiverService.java)
+- [JNI Integration for native inference](app/src/main/cpp/native-lib.cpp)
 
 ## 🧪 Testing
 
