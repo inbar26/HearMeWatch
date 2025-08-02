@@ -8,19 +8,22 @@ People with hearing impairments often face challenges in detecting important sou
 
 ## Features
 
-- 📣 Real-time sound recognition
-- ⏱️ Runs continuously using a Foreground Service
-- 🤖 Dual-model integration:
-  - Edge Impulse: for detecting specific keywords (e.g., names)
-  - YAMNet: for recognizing general sound events (e.g., speech, alarms)
-- 🎧 Processes live audio input (no need to store WAV files)
-- 🔔 Notifies users with in-app and UI alerts
+- 📣 Real-time sound classification
+- ⏱️ Continuous listening via a Foreground Service
+- 🤖 Dual-model inference:
+  - **Edge Impulse** for detecting specific keywords (e.g., names)
+  - **YAMNet** for identifying general environmental sounds (e.g., speech, alarms)
+- 🎧 Live microphone input (no file storage required)
+- 🔔 Immediate alerts shown visually and tactically on Wear OS smartwatches
+- 🛠️ Customizable sound categories based on user preferences (via Firebase)
 
-## Architecture
+## 🧩 System Architecture
 
-- **Foreground Service**: continuously listens using the microphone and processes 1-second audio frames.
-- **Edge Impulse Model**: processes audio with JNI and returns classification results.
-- **YAMNet Model**: uses TensorFlow Lite for multi-class environmental sound detection.
+- **Foreground Service**: captures 1-second PCM audio buffers from the microphone in real time.
+- **Edge Impulse Model**: native C++ inference via JNI for keyword spotting.
+- **YAMNet Model**: TensorFlow Lite-based model for multi-class audio classification.
+- **SharedPreferences + Firebase**: used to store and sync user-defined sound preferences.
+- **Wear OS Data Layer API**: sends alerts from phone to watch (bi-directional messaging supported).
 
 ## Technologies Used
 
@@ -28,8 +31,14 @@ People with hearing impairments often face challenges in detecting important sou
 - TensorFlow Lite
 - Edge Impulse C++ SDK
 - Android Foreground Service
-- Jetpack Compose UI
+- Firebase Realtime Database
+- Wear OS communication (MessageClient / NodeClient)
 - JNI Integration for native inference
+
+## 🧪 Testing
+
+- ✅ Accuracy tests using categorized WAV datasets (Edge Impulse and YAMNet)
+- 🕒 End-to-end response time tests (from sound detection to watch alert)
 
  ## 👩‍💻 Developers
 - [Noa Sharabi](https://www.linkedin.com/in/noa-sharabi-32616329b/)
@@ -40,3 +49,11 @@ People with hearing impairments often face challenges in detecting important sou
 1. Clone the repository:
    ```bash
    git clone https://github.com/inbar26/HearMeWatch.git
+
+2. Open the project in Android Studio.
+
+3. Ensure you have a connected Wear OS device or emulator.
+
+4. Build and run the app on both phone and watch modules.
+
+
