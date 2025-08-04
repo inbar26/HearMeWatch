@@ -39,8 +39,8 @@ People with hearing impairments often face challenges in detecting important sou
 
 ## 🧪 Testing
 
-- ✅ Accuracy tests using categorized WAV datasets (Edge Impulse and YAMNet)
-- 🕒 End-to-end response time tests (from sound detection to watch alert)
+- ✅ [Accuracy tests using categorized WAV datasets (Edge Impulse and YAMNet)](app/src/androidTest/java/dev/noash/hearmewatch/SoundRecognitionAccuracyTest.java)
+- 🕒 [End-to-end response time tests (from sound detection to watch alert)](app/src/androidTest/java/dev/noash/hearmewatch/ResponseTimeTest.java)
 
  ## 👩‍💻 Developers
 - [Noa Sharabi](https://www.linkedin.com/in/noa-sharabi-32616329b/)
