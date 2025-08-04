@@ -93,17 +93,14 @@ public class PreferenceListFragment extends Fragment {
                     case "Baby Crying":
                         resId = R.drawable.ic_baby_crying;
                         break;
-                    case "Ambulance Siren":
-                        resId = R.drawable.ic_ambulance;
-                        break;
-                    case "Police Siren":
-                        resId = R.drawable.ic_police;
+                    case "Emergency Vehicle":
+                        resId = R.drawable.ic_emergency_vehicle;
                         break;
                     case "Car Horn":
                         resId = R.drawable.ic_car_horn;
                         break;
                     case "Civil Defense":
-                        resId = R.drawable.ic_civil_defense;
+                        resId = R.drawable.ic_emergency_vehicle;
                         break;
                     case "Door Knock":
                         resId = R.drawable.ic_door_knock;

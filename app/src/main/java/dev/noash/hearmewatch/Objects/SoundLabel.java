@@ -3,9 +3,8 @@ package dev.noash.hearmewatch.Objects;
 public enum SoundLabel {
 
     NAME_CALLING("Name Calling"),
-    AMBULANCE_SIREN("Ambulance Siren"),
+    EMERGENCY_VEHICLE("Emergency Vehicle"),
     FIRE_ALARM("Fire Alarm"),
-    POLICE_SIREN("Police Siren"),
     CAR_HORN("Car Horn"),
     INTERCOM("Intercom"),
     DOOR_KNOCK("Door Knock"),

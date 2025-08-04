@@ -169,11 +169,8 @@ public class MyForegroundService extends Service {
 
                                     case "Ambulance (siren)":
                                     case "Emergency vehicle":
-                                        handleSoundLabelNotification(this, SoundLabel.AMBULANCE_SIREN);
-                                        break;
-
                                     case "Police car (siren)":
-                                        handleSoundLabelNotification(this, SoundLabel.POLICE_SIREN);
+                                        handleSoundLabelNotification(this, SoundLabel.EMERGENCY_VEHICLE);
                                         break;
 
                                     case "Car alarm":
@@ -362,8 +359,8 @@ public class MyForegroundService extends Service {
             }
         }
 
-        if(maxConfidence > 60f) { //Send only if there is a high recognition rate (above 60%)
-            Log.d("EdgeImpulse", "Top label: " + topLabel);
+        if(maxConfidence > 50f) { //Send only if there is a high recognition rate (above 60%)
+            Log.d("EdgeImpulse", "Top label: " + topLabel +" Confidence: "+maxConfidence);
             return topLabel;
         }
         return null;
