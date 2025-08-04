@@ -17,22 +17,15 @@ public class LabelCategoryMap {
         LABEL_TO_CATEGORY_MAP.put("Whimper", "Baby cry, infant cry");
         LABEL_TO_CATEGORY_MAP.put("Crying, sobbing", "Baby cry, infant cry");
 
-        // AMBULANCE_SIREN
-        LABEL_TO_CATEGORY_MAP.put("Ambulance (siren)", "ambulance (siren)");
-        LABEL_TO_CATEGORY_MAP.put("Emergency vehicle", "ambulance (siren)");
-
-        // POLICE_SIREN
-        LABEL_TO_CATEGORY_MAP.put("Police car (siren)", "police car (siren)");
+        // Emergency vehicle
+        LABEL_TO_CATEGORY_MAP.put("Emergency vehicle", "emergency vehicle");
+        LABEL_TO_CATEGORY_MAP.put("Ambulance (siren)", "emergency vehicle");
+        LABEL_TO_CATEGORY_MAP.put("Police car (siren)", "emergency vehicle");
 
         // CAR_HORN
         LABEL_TO_CATEGORY_MAP.put("Car alarm", "car alarm");
         LABEL_TO_CATEGORY_MAP.put("Toot", "car alarm");
         LABEL_TO_CATEGORY_MAP.put("Vehicle horn, car horn, honking", "car alarm");
-
-
-        // CIVIL_DEFENSE - we need to add
-        LABEL_TO_CATEGORY_MAP.put("Civil defense siren", "civil_defense");
-        LABEL_TO_CATEGORY_MAP.put("Alarm", "civil_defense");
 
         // DOOR_KNOCK
         LABEL_TO_CATEGORY_MAP.put("Knock", "door");
