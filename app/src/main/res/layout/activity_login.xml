@@ -17,7 +17,7 @@
         android:visibility="invisible">
 
     <ImageView
-        android:id="@+id/TV_title"
+        android:id="@+id/IV_image"
         android:layout_width="450dp"
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
@@ -26,7 +26,6 @@
         android:layout_marginBottom="4dp" />
 
     <TextView
-        android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to\nHearMeWatch!"
@@ -39,7 +38,6 @@
         android:lineSpacingExtra="12dp"/>
 
     <TextView
-        android:id="@+id/subtitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign in to begin your journey"

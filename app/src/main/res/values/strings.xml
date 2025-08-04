@@ -18,13 +18,14 @@
     <string name="save_changes">Save Changes</string>
     <string name="activating_sound_detection">Activating Sound Detection</string>
     <string name="choosing_sound_categories">Choosing Sound Categories</string>
-    <string name="available_categories_html"><![CDATA[<b>Available categories :</b><br> Name Calling, Civil Defense, Ambulance Siren, Fire Alarm, Police Siren, Car Horn, Intercom, Door Knock, Baby Crying, Dog Barking.]]></string>
+    <string name="available_categories_html"><![CDATA[<b>Available categories :</b><br> Name Calling*, Civil Defense, Ambulance Siren, Fire Alarm, Police Siren, Car Horn, Intercom, Door Knock, Baby Crying, Dog Barking.]]></string>
     <string name="smartwatch_alerts">Smartwatch Alerts</string>
-    <string name="when_a_sound_is_detected_that_matches_your_selected_categories_you_ll_receive_an_instant_alert_on_your_smartwatch_with">When a sound is detected that matches your selected categories, you\'ll receive an instant alert on your smartwatch with :</string>
     <string name="privacy_amp_security"><![CDATA[Privacy & Security]]></string>
-    <string name="privacy_notice"><![CDATA[<b>Your privacy is protected :</b><br>Audio is processed in real time and is never stored. All sound recognition happens locally on your device.]]></string>
+    <string name="privacy_notice"><![CDATA[<b>Your privacy is protected :</b><br>Audio is processed in real time and never stored. All sound analysis is done locally on your device.]]></string>
     <string name="make_sure_your_watch_is_connected_and_nearby_for_optimal_sound_detection_functionality">Make sure your watch is connected and nearby for optimal sound detection functionality.</string>
     <string name="pay_attention">Pay Attention</string>
+    <string name="when_a_sound_from_your_selected_categories_is_detected_your_smartwatch_will_instantly_alert_you_with">When a sound from your selected categories is detected, your smartwatch will instantly alert you with :</string>
+    <string name="name_calling_option_detects_when_someone_calls_your_name_based_on_the_name_saved_in_your_profile">*Name Calling option detects when someone calls your name, based on the name saved in your profile.</string>
 
 
 </resources>

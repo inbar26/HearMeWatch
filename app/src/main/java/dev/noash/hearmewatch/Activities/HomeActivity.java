@@ -133,7 +133,7 @@ public class HomeActivity extends AppCompatActivity {
         setHelloMessage();
 
         TextView subtitle = findViewById(R.id.TV_page_subtitle);
-        subtitle.setText("Ready to detect sounds?");
+        subtitle.setText("Ready to detect sounds ?");
     }
 
     private void setHelloMessage() {

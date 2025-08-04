@@ -1,13 +1,25 @@
 package dev.noash.hearmewatch.Activities;
 
-import android.os.Bundle;
-import android.view.View;
 import android.text.Html;
+import android.view.View;
+import android.os.Bundle;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ClickableSpan;
+import android.text.method.LinkMovementMethod;
+import android.graphics.drawable.ColorDrawable;
+
 import android.view.LayoutInflater;
 
+import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.PopupWindow;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -51,14 +63,14 @@ public class GuideActivity extends AppCompatActivity {
         guide1_step1.setStep(
                 1,
                 "Go to Dashboard",
-                "Open the main dashboard from the menu",
+                "Navigate to Dashboard from the side menu",
                 R.drawable.bg_step_number_blue
         );
 
         guide1_step2.setStep(
                 2,
                 "Tap \"Start Sound Detection\"",
-                "Press the large button to begin monitoring sounds",
+                "Press the button to begin monitoring sounds",
                 R.drawable.bg_step_number_blue
         );
 
@@ -92,7 +104,7 @@ public class GuideActivity extends AppCompatActivity {
 
         //Init info
         TextView categories = findViewById(R.id.TV_available_categories);
-        categories.setText(Html.fromHtml(getString(R.string.available_categories_html)));
+        initCategoriesAndNameCallingPopup(categories);
 
         TextView privacy = findViewById(R.id.TV_privacy_info);
         privacy.setText(Html.fromHtml(getString(R.string.privacy_notice)));
@@ -103,9 +115,47 @@ public class GuideActivity extends AppCompatActivity {
 
         TextView bullet2 = findViewById(R.id.bullet2).findViewById(R.id.bullet_text);
         bullet2.setText("Visual alert with sound type");
+    }
 
-        TextView bullet3 = findViewById(R.id.bullet3).findViewById(R.id.bullet_text);
-        bullet3.setText("Timestamp of detection");
+    private void initCategoriesAndNameCallingPopup(TextView categories) {
+        Spanned htmlText = Html.fromHtml(getString(R.string.available_categories_html));
+        SpannableString spannable = new SpannableString(htmlText);
+
+        String plainText = htmlText.toString();
+
+        int start = plainText.indexOf("Name Calling");
+        int end = start + "Name Calling".length();
+
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                View popupView = LayoutInflater.from(GuideActivity.this)
+                        .inflate(R.layout.popup_name_calling_info, null);
+
+                PopupWindow popupWindow = new PopupWindow(popupView,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        true);
+
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                // Popup location
+                popupWindow.showAsDropDown(categories, 320, -categories.getHeight() - 220);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+                ds.setColor(ContextCompat.getColor(GuideActivity.this, R.color.categories_text));
+            }
+        };
+
+        spannable.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        categories.setText(spannable);
+        categories.setMovementMethod(LinkMovementMethod.getInstance());
+        categories.setHighlightColor(Color.TRANSPARENT);
     }
 
     private void initDrawer() {

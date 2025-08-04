@@ -35,9 +35,6 @@ import dev.noash.hearmewatch.Utilities.DBManager;
 import dev.noash.hearmewatch.Utilities.SPManager;
 import dev.noash.hearmewatch.Utilities.DrawerManager;
 
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -127,11 +124,14 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        DBManager.getInstance().updateUserName(fName, lName)
+        String finalLName = capitalizeFirstLetter(lName);
+        String finalFLName = capitalizeFirstLetter(fName);
+
+        DBManager.getInstance().updateUserName(finalFLName, finalLName)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        DBManager.getInstance().getUser().setName(fName, lName);
-                        SPManager.getInstance().setUserName(fName);
+                        DBManager.getInstance().getUser().setName(finalFLName, finalLName);
+                        SPManager.getInstance().setUserName(finalFLName);
                         Toast.makeText(this, "User updated successfully.", Toast.LENGTH_SHORT).show();
                         initDrawer();
                         initFields();
@@ -139,6 +139,11 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private String capitalizeFirstLetter(String input) {
+        if (input == null || input.isEmpty()) return input;
+        return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
     }
 
     private void showUploadPhotoOptions() { // Shows an options dialog for editing the profile photo: take photo, choose from gallery, or delete photo

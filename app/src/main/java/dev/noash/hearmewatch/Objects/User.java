@@ -93,7 +93,6 @@ public class User {
     public void initMyPreferences() {
         ArrayList<Preference> defPreList = new ArrayList<>();
         defPreList.add(new Preference(SoundLabel.getDisplayName(SoundLabel.NAME_CALLING), true));
-        defPreList.add(new Preference(SoundLabel.getDisplayName(SoundLabel.CIVIL_DEFENSE), true));
         defPreList.add(new Preference(SoundLabel.getDisplayName(SoundLabel.AMBULANCE_SIREN), true));
         defPreList.add(new Preference(SoundLabel.getDisplayName(SoundLabel.FIRE_ALARM), true));
         defPreList.add(new Preference(SoundLabel.getDisplayName(SoundLabel.POLICE_SIREN), true));

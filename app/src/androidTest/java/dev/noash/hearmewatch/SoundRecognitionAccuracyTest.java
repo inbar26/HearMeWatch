@@ -2,15 +2,15 @@ package dev.noash.hearmewatch;
 
 import static org.junit.Assert.assertTrue;
 
-import android.content.Context;
 import android.util.Log;
+import android.content.Context;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Locale;
+import java.io.IOException;
 
 public class SoundRecognitionAccuracyTest extends SoundModelTestBase {
     private static final String TAG = "ACCURACY";

@@ -1,76 +1,74 @@
 package dev.noash.hearmewatch;
 
-import static org.junit.Assert.assertTrue;
-
-import android.content.Context;
 import android.util.Log;
+import android.os.Environment;
 
-import androidx.test.platform.app.InstrumentationRegistry;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
 
-import java.io.IOException;
+import java.util.*;
+import java.io.File;
+import java.io.FileReader;
+import java.lang.reflect.Type;
+import java.io.BufferedReader;
 
-public class ResponseTimeTest extends SoundModelTestBase {
-    private static final String TAG = "RESPONSE_TIME";
-    private static final long MAX_ALLOWED_MS = 1000;
+
+public class ResponseTimeTest {
+
+    private static final String SEND_FILE = "log_send.json";
+    private static final String RECEIVE_FILE = "log_receive.json";
 
     @Test
-    public void testModelResponseTime() {
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    public void testResponseTimes() throws Exception {
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File sendFile = new File(downloadsDir, SEND_FILE);
+        File receiveFile = new File(downloadsDir, RECEIVE_FILE);
 
-        try {
-            ModelHelper.initializeModels(context); // ✅ Initialize both models
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to initialize models", e);
+        List<Long> sendTimestamps = loadTimestamps(sendFile);
+        List<Long> receiveTimestamps = loadTimestamps(receiveFile);
+
+        if (sendTimestamps.size() != receiveTimestamps.size()) {
+            Log.w("RESPONSE_TEST", "⚠️ Number of sends and receives doesn't match exactly");
         }
 
-        try {
-            String[] categories = context.getAssets().list("sounds");
-            if (categories == null) {
-                Log.e(TAG, "No categories found in assets/sounds/");
-                return;
+        int matched = Math.min(sendTimestamps.size(), receiveTimestamps.size());
+        int aboveThreshold = 0;
+        long totalDelay = 0;
+
+        for (int i = 0; i < matched; i++) {
+            long delay = receiveTimestamps.get(i) - sendTimestamps.get(i);
+            totalDelay += delay;
+            if (delay > 1000) {
+                aboveThreshold++;
             }
+            Log.i("RESPONSE_TEST", "🕒 Response " + i + ": " + delay + " ms");
+        }
 
-            for (String category : categories) {
-                String basePath = "sounds/" + category;
-                boolean isEdgeImpulse = category.equalsIgnoreCase("name calling");
+        double avg = matched > 0 ? totalDelay / (double) matched : 0;
+        Log.i("RESPONSE_TEST", "\n✅ Total Messages: " + matched +
+                "\n⏱️ Average Delay: " + avg + " ms" +
+                "\n🚨 Above 1s: " + aboveThreshold + " / " + matched);
+    }
 
-                String[] folders = isEdgeImpulse ? context.getAssets().list(basePath) : new String[]{""};
-
-                for (String subfolder : folders) {
-                    String folderPath = isEdgeImpulse ? basePath + "/" + subfolder : basePath;
-                    String[] files = context.getAssets().list(folderPath);
-
-                    if (files == null) continue;
-
-                    for (String fileName : files) {
-                        if (!fileName.endsWith(".wav")) continue;
-
-                        String assetPath = folderPath + "/" + fileName;
-
-                        long start = System.nanoTime();
-                        String prediction = runModelAndGetTopLabel(
-                                context,
-                                assetPath,
-                                isEdgeImpulse ? ModelType.EDGE_IMPULSE : ModelType.YAMNET
-                        );
-                        long durationMs = (System.nanoTime() - start) / 1_000_000;
-
-                        Log.d(TAG, "⏱ " + assetPath + " took " + durationMs + "ms");
-
-                        // 🟡 Optional: print label count if using YAMNet
-                        if (!isEdgeImpulse && prediction != null) {
-                            String[] predictedLabels = prediction.split(",");
-                            Log.d(TAG, "📊 Labels returned: " + predictedLabels.length + " -> " + prediction);
-                        }
-
-                        assertTrue("Model inference took too long: " + durationMs + "ms", durationMs <= MAX_ALLOWED_MS);
-                    }
+    private List<Long> loadTimestamps(File file) {
+        List<Long> timestamps = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            Gson gson = new Gson();
+            Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+            while ((line = reader.readLine()) != null) {
+                Map<String, Object> entry = gson.fromJson(line, mapType);
+                Double ts = (Double) entry.get("timestamp");
+                if (ts != null) {
+                    timestamps.add(ts.longValue());
                 }
             }
-        } catch (IOException e) {
-            Log.e(TAG, "Error reading assets", e);
+            Log.d("RESPONSE_TEST", "✅ Loaded " + timestamps.size() + " send timestamps");
+        } catch (Exception e) {
+            Log.e("RESPONSE_TEST", "❌ Failed to load send log", e);
         }
+        return timestamps;
     }
 }

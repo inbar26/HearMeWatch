@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@drawable/bg_popup_message"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name Calling option detects when\n someone calls your name, based\n on the name saved in your profile."
+        android:textSize="12sp"
+        android:lineSpacingExtra="4dp" />
+</LinearLayout>

@@ -15,8 +15,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.Map;
 import java.util.List;
@@ -127,6 +127,11 @@ public class DBManager {
     public void loadUserDataFromDB(CallBack<Boolean> callBack) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        if (user == null) {
+            callBack.res(false);
+            return;
+        }
+
         usersRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -199,20 +204,12 @@ public class DBManager {
     }
 
     public static void saveVibrationsToDatabase(List<Vibration> vibrations) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("vibrations");
-
         HashMap<String, Vibration> vibrationMap = new HashMap<>();
         for (Vibration v : vibrations) {
             vibrationMap.put(v.getName(), v);
         }
 
-        ref.setValue(vibrationMap)
-                .addOnSuccessListener(aVoid -> {
-                    System.out.println("Vibrations saved successfully!");
-                })
-                .addOnFailureListener(e -> {
-                    System.err.println("Failed to save vibrations: " + e.getMessage());
-                });
+        vibrationsRef.setValue(vibrationMap);
     }
 
     public Task<Void> updateUserProfileImageUrl(String url) {

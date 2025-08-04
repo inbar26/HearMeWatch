@@ -1,7 +1,7 @@
 package dev.noash.hearmewatch;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 public class LabelCategoryMap {
 
@@ -54,6 +54,4 @@ public class LabelCategoryMap {
     public static String getCategory(String label) {
         return LABEL_TO_CATEGORY_MAP.getOrDefault(label, null);
     }
-
-
 }

@@ -94,8 +94,9 @@
                     android:background="@drawable/bg_info_box_blue"
                     android:padding="12dp"
                     android:textSize="16sp"
-                    android:textColor="#1976D2"
+                    android:textColor="@color/categories_text"
                     android:lineSpacingExtra="5dp"/>
+
             </LinearLayout>
 
             <!-- Smartwatch Alerts -->
@@ -122,10 +123,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/when_a_sound_is_detected_that_matches_your_selected_categories_you_ll_receive_an_instant_alert_on_your_smartwatch_with"
+                    android:text="@string/when_a_sound_from_your_selected_categories_is_detected_your_smartwatch_will_instantly_alert_you_with"
                     android:textSize="@dimen/text_step_name"
                     android:layout_marginBottom="8dp"
-                    android:lineSpacingExtra="4dp"/>
+                    android:lineSpacingExtra="5dp"/>
 
                 <include
                     layout="@layout/bullet_view"
@@ -135,9 +136,6 @@
                     layout="@layout/bullet_view"
                     android:id="@+id/bullet2" />
 
-                <include
-                    layout="@layout/bullet_view"
-                    android:id="@+id/bullet3" />
             </LinearLayout>
 
             <!-- Privacy & Security -->

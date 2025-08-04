@@ -47,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         DBManager.init(getApplicationContext());
         SPManager.init(getApplicationContext());
 
+        initSignInLauncher();
+
         FirebaseUser user = DBManager.getInstance().fetchCurrentUser();
         if(user == null) {
             showLoginScreen(); //user not found
@@ -65,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginScreen() {
         setContentView(R.layout.activity_login);
-        initSignInLauncher();
         findViews();
         initViews();
     }
@@ -95,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        imageView = findViewById(R.id.TV_title);
+        imageView = findViewById(R.id.IV_image);
         googleBtn = findViewById(R.id.BTN_google);
         loginContainer = findViewById(R.id.login_container);
     }
@@ -151,16 +152,20 @@ public class LoginActivity extends AppCompatActivity {
         DBManager.getInstance().loadUserDataFromDB(new DBManager.CallBack<Boolean>() {
             @Override
             public void res(Boolean res) {
-                if(res) { //data load successfully
+                if(res != null && res) { //data load successfully
                         DBManager.getInstance().loadVibrationListFromDB(new DBManager.CallBack<Boolean>() {
                             @Override
                             public void res(Boolean res) {
-                                if (res) { //data load successfully
+                                if (res != null && res) { //data load successfully
                                     moveToHomePage();
+                                } else {
+                                    showLoginScreen();
                                 }
                             }
                         });
-                    }
+                    } else {
+                    showLoginScreen();
+                }
                 }
         });
     }

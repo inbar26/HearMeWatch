@@ -99,4 +99,13 @@ dependencies {
 
     //Google
     implementation (libs.material.v1110)
+
+    implementation (libs.gson)
+
+    implementation (libs.play.services.wearable)
+    implementation (libs.androidx.wear.v120)
+    compileOnly (libs.wearable)
+    implementation (libs.androidx.wear.remote.interactions)
+    implementation (libs.gson)
+
 }

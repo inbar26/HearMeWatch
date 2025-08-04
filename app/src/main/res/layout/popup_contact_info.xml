@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="12dp"
-    android:background="@drawable/bg_contact_message"
+    android:background="@drawable/bg_popup_message"
     android:elevation="6dp">
 
     <TextView

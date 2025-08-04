@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Environment;
 import android.content.Context;
 import android.app.Notification;
 import android.media.AudioFormat;
@@ -20,13 +21,22 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.google.gson.Gson;
 import com.google.android.gms.wearable.Wearable;
 
+
+import java.io.File;
+import java.util.Map;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.HashMap;
+import java.io.FileWriter;
 import java.nio.ByteOrder;
+import java.util.TimeZone;
 import java.nio.ByteBuffer;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import dev.noash.hearmewatch.ModelHelper;
 import dev.noash.hearmewatch.YamnetRunner;
@@ -40,7 +50,7 @@ public class MyForegroundService extends Service {
     private Handler handler;
     private boolean isRecording = false;
     private static final String CHANNEL_ID = "ForegroundServiceChannel";
-    public static final String BASE_SOUND_MESSAGE = "A sound was detected nearby :\n";
+    public static final String BASE_SOUND_MESSAGE = "A sound was detected nearby \n";
     public static final String PATH_SOUND_NOTIFICATION = "/sound_alert";
     private static final long NOTIFICATION_EXPIRY_DURATION = 10_000L;
     public static HashMap<String, Long> notificationTimestamps = new HashMap<>();
@@ -241,7 +251,7 @@ public class MyForegroundService extends Service {
         long now = System.currentTimeMillis();
         Long lastTime = notificationTimestamps.get(displayName);
 
-        boolean shouldNotify = ((lastTime == null || (now - lastTime > NOTIFICATION_EXPIRY_DURATION)) &&
+        boolean shouldNotify = (
                 topLabel != null &&
                 userName != null &&
                 !userName.equals("Not Found") &&
@@ -262,6 +272,9 @@ public class MyForegroundService extends Service {
     }
 
     private void sendMessageToWatch(Context context, String message) {
+        long sendAt = System.currentTimeMillis();
+        saveSendTimeToJson(sendAt);
+
         Wearable.getNodeClient(context).getConnectedNodes().addOnSuccessListener(nodes -> {
             if (nodes.isEmpty()) {
                 Log.e("SEND_TO_WATCH", "❌ No connected nodes — cannot send message!");
@@ -281,6 +294,30 @@ public class MyForegroundService extends Service {
         }).addOnFailureListener(e -> {
             Log.e("SEND_TO_WATCH", "❌ Failed to get connected nodes: " + e.getMessage());
         });
+    }
+
+    public void saveSendTimeToJson(long timestamp) {
+        // Updates time stamp format
+        String formattedSendTime = new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).format(new Date(timestamp));
+
+        try {
+            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file  = new File(downloadsDir, "log_send.json");
+
+            // Values map
+            Map<String, Object> data = new HashMap<>();
+            data.put("send_time", formattedSendTime);
+            data.put("timestamp", timestamp);
+
+            // Write to file
+            FileWriter writer = new FileWriter(file, true);
+            writer.write(new Gson().toJson(data) + "\n");
+            writer.close();
+
+            Log.d("LOG", "📄 Send time saved to file: " + formattedSendTime);
+        } catch (Exception e) {
+            Log.e("LOG", "❌ Send time Failed to save", e);
+        }
     }
 
     private void createNotificationChannel() {
