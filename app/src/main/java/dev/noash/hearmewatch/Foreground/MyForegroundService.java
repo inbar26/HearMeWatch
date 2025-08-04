@@ -182,11 +182,6 @@ public class MyForegroundService extends Service {
                                         handleSoundLabelNotification(this, SoundLabel.CAR_HORN);
                                         break;
 
-                                    case "Civil defense siren":
-                                    case "Alarm":
-                                        handleSoundLabelNotification(this, SoundLabel.CIVIL_DEFENSE);
-                                        break;
-
                                     case "Knock":
                                     case "Door":
                                         handleSoundLabelNotification(this, SoundLabel.DOOR_KNOCK);
