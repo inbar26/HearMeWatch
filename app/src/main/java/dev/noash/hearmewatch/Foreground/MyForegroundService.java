@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import dev.noash.hearmewatch.ModelHelper;
-import dev.noash.hearmewatch.Objects.NameLabel;
 import dev.noash.hearmewatch.YamnetRunner;
+import dev.noash.hearmewatch.Objects.NameLabel;
 import dev.noash.hearmewatch.Objects.SoundLabel;
 import dev.noash.hearmewatch.Utilities.SPManager;
 import dev.noash.hearmewatch.EdgeImpulseProcessor;
@@ -377,12 +377,6 @@ public class MyForegroundService extends Service {
         }
 
         return null;
-
-//        if(maxConfidence > 50f) { //Send only if there is a high recognition rate (above 60%)
-//            Log.d("EdgeImpulse", "Top label: " + topLabel +" Confidence: "+maxConfidence);
-//            return topLabel;
-//        }
-//        return null;
     }
 
 
