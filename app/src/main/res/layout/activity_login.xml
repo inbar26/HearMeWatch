@@ -34,6 +34,7 @@
         android:textColor="#1E293B"
         android:layout_marginBottom="16dp"
         android:layout_gravity="center_horizontal"
+        android:gravity="center"
         android:fontFamily="@font/font_app_name"
         android:lineSpacingExtra="12dp"/>
 

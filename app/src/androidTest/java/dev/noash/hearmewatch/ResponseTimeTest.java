@@ -35,21 +35,29 @@ public class ResponseTimeTest {
 
         int matched = Math.min(sendTimestamps.size(), receiveTimestamps.size());
         int aboveThreshold = 0;
+        int belowThreshold = 0;
         long totalDelay = 0;
 
         for (int i = 0; i < matched; i++) {
             long delay = receiveTimestamps.get(i) - sendTimestamps.get(i);
             totalDelay += delay;
+
             if (delay > 1000) {
                 aboveThreshold++;
+            }  else {
+                belowThreshold++;
             }
             Log.i("RESPONSE_TEST", "🕒 Response " + i + ": " + delay + " ms");
         }
 
         double avg = matched > 0 ? totalDelay / (double) matched : 0;
+        double belowPercent = matched > 0 ? (belowThreshold * 100.0) / matched : 0;
+
         Log.i("RESPONSE_TEST", "\n✅ Total Messages: " + matched +
                 "\n⏱️ Average Delay: " + avg + " ms" +
-                "\n🚨 Above 1s: " + aboveThreshold + " / " + matched);
+                "\n🚨 Above 1s: " + aboveThreshold + " / " + matched +
+                "\n⚡ Under 1s: " + belowThreshold + " / " + matched +
+                String.format(" (%.1f%%)", belowPercent));
     }
 
     private List<Long> loadTimestamps(File file) {
