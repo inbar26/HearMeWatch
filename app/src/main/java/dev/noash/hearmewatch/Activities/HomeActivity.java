@@ -120,6 +120,7 @@ public class HomeActivity extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navView = findViewById(R.id.navigation_view);
+        DrawerManager.setCurrentId(R.id.nav_dashboard);
         DrawerManager.setupDrawer(this, drawerLayout, toolbar, navView);
 
         View headerView = navView.getHeaderView(0);

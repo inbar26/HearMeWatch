@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import dev.noash.hearmewatch.ModelHelper;
+import dev.noash.hearmewatch.Objects.NameLabel;
 import dev.noash.hearmewatch.YamnetRunner;
 import dev.noash.hearmewatch.Objects.SoundLabel;
 import dev.noash.hearmewatch.Utilities.SPManager;
@@ -359,11 +360,29 @@ public class MyForegroundService extends Service {
             }
         }
 
-        if(maxConfidence > 50f) { //Send only if there is a high recognition rate (above 60%)
-            Log.d("EdgeImpulse", "Top label: " + topLabel +" Confidence: "+maxConfidence);
-            return topLabel;
+        if (topLabel != null) {
+            NameLabel nameLabel = NameLabel.fromLabel(topLabel.toLowerCase());
+
+            if (nameLabel != null) {
+                float requiredConfidence = nameLabel.getMinConfidence();
+                if (maxConfidence >= requiredConfidence) {
+                    Log.d("EdgeImpulse", "Top label: " + topLabel + ". Confidence: " + maxConfidence);
+                    return topLabel;
+                } else {
+                    Log.d("EdgeImpulse", "Confidence too low for " + topLabel + ": " + maxConfidence + " < " + requiredConfidence);
+                }
+            } else {
+                Log.w("EdgeImpulse", "Unknown label: " + topLabel);
+            }
         }
+
         return null;
+
+//        if(maxConfidence > 50f) { //Send only if there is a high recognition rate (above 60%)
+//            Log.d("EdgeImpulse", "Top label: " + topLabel +" Confidence: "+maxConfidence);
+//            return topLabel;
+//        }
+//        return null;
     }
 
 
