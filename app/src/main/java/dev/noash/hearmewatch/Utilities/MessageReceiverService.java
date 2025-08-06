@@ -5,7 +5,6 @@ import com.google.android.gms.wearable.WearableListenerService;
 import android.util.Log;
 import com.google.gson.Gson;
 import android.os.Environment;
-import android.content.Context;
 import com.google.android.gms.wearable.MessageEvent;
 
 import java.io.*;

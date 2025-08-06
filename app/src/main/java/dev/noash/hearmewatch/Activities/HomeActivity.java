@@ -70,10 +70,10 @@ public class HomeActivity extends AppCompatActivity {
         startRecordingBtn.setOnClickListener(v -> startMyService());
         stopRecordingBtn.setOnClickListener(v -> stopMyService());
 
-        contactUsBtn.setOnClickListener(v -> shoeContactUsMessage());
+        contactUsBtn.setOnClickListener(v -> showContactUsMessage());
     }
 
-    private void shoeContactUsMessage() {
+    private void showContactUsMessage() {
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_contact_info, null);
 
         PopupWindow popupWindow = new PopupWindow(

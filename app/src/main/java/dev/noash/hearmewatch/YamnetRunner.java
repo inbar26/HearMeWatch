@@ -50,6 +50,8 @@ public class YamnetRunner {
                 }
             }
 
+            Log.d("YAMNet", "Detection Percentage: " + bestScore*100f);
+
             // Step 2: collect all labels with max score
             for (int i = 0; i < 521; i++) {
                 if (Math.abs(output[0][i] - bestScore) < 1e-6) { // float precision

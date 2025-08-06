@@ -64,7 +64,6 @@ public class MainActivity extends Activity implements MessageClient.OnMessageRec
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(1001, builder.build());
     }
-
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Sound Alerts";
