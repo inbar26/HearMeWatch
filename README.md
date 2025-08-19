@@ -11,8 +11,8 @@ People with hearing impairments often face challenges in detecting important sou
 - 📣 Real-time sound classification
 - ⏱️ Continuous listening via a Foreground Service
 - 🤖 Dual-model inference:
-  - **Edge Impulse** for detecting specific keywords (e.g., names)
-  - **YAMNet** for identifying general environmental sounds (e.g., speech, alarms)
+  - **Edge Impulse** for detecting specific keywords ,focusing on user names (Avigail, Daniel, Inbar, Noa, Yossi, Yonatan)
+  - **YAMNet** for identifying general environmental sounds (Emergency Vehicle, Car Horn, Fire Alarm, Intercom, Door Knock, Baby Crying, Dog Barking)
 - 🎧 Live microphone input (no file storage required)
 - 🔔 Immediate alerts shown visually and tactically on Wear OS smartwatches
 - 🛠️ Customizable sound categories based on user preferences (via Firebase)
